@@ -18,5 +18,7 @@
  param result: the top k numbers
  */
 void TopKnum(int num[],int size,int K,int result[]);
+/*
+ */
 
 #endif
