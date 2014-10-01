@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include "TopKNum.h"
+
 static void siftDown(int num[],int start,int heapSize)
 {
     int i =0;
@@ -15,13 +16,13 @@ static void siftDown(int num[],int start,int heapSize)
     for(i=2*start+1;i<=heapSize;i=2*i+1)//left child
     {
         if(i<heapSize&&num[i]>num[i+1])i++;//find the more little element
-        if(temp<num[i])break;
+        if(temp<num[i])break;//temp in right position
         else {
             num[start]=num[i];
             start =  i;
         }
     }
-    num[start]= temp;
+    num[start]= temp;//locate the temp position
 }
 static void createMinHeap(int num[],int heapSize)
 {
@@ -65,6 +66,58 @@ void TopKnum(int num[],int size,int K,int result[])
         }
          print(num,K);
     }
+    for (i=0; i<K; i++) {
+        result[i]=num[i];
+    }
+}
+
+
+static int partittion(int num[],int start,int end)
+{
+    int axis = num[start];
+    while (start!=end) {
+        while(start<end&&num[end]<axis)end--;
+        if(start<end){
+            num[start++]=num[end];
+        }
+        while(start<end&&num[start]>axis)start++;
+        if(start<end)
+        {
+            num[end--]=num[start];
+        }
+        
+    }
+    num[start]=axis;
+    return start;
+}
+/*
+ TODO: use divide-conque algorithm to find the top k numbers
+       locate the Kth number then we can find top k numbers
+ param num:the number array to find the top k numbers
+ param k: the top K 
+ param result: the top k numbers
+ */
+void TOPKNumDC(int num[],int size,int K,int result[])
+{
+    int i=0;
+    if(K<=0||K>size)
+        return;
+    int axis =0;
+    int start =0,end = size-1;
+    while (axis!=K-1) {
+        axis = partittion(num, start, end);
+        print(num, size);
+        if(axis>K-1)
+        {
+            end = axis-1;//find K in front part
+        }
+        else if(axis<K-1)
+        {
+            start = axis+1;//find k in second part
+            //K -= axis;
+        }
+    }
+   
     for (i=0; i<K; i++) {
         result[i]=num[i];
     }

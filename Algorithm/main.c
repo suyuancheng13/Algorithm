@@ -26,7 +26,7 @@ int main(int argc, const char * argv[])
         printf("%d,",num[i]);
     }
     printf("\n");
-    TopKnum(num, 16, 6, result);
+    TOPKNumDC(num, 16, 6, result);
     for(int i=0;i<6;i++)
     {
         printf("%d,",result[i]);

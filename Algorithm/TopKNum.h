@@ -19,6 +19,11 @@
  */
 void TopKnum(int num[],int size,int K,int result[]);
 /*
+ TODO: use divide-conque algorithm to find the top k numbers
+ param num:the number array to find the top k numbers
+ param k: the top K 
+ param result: the top k numbers
  */
+void TOPKNumDC(int num[],int size,int K,int result[]);
 
 #endif
