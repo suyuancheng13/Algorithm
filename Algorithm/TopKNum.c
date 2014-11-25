@@ -76,17 +76,18 @@ static int partittion(int num[],int start,int end)
 {
     int axis = num[start];
     while (start!=end) {
-        while(start<end&&num[end]<axis)end--;
+        while(start<end && num[end]<axis)end--;
         if(start<end){
             num[start++]=num[end];
         }
-        while(start<end&&num[start]>axis)start++;
+        while(start<end && num[start]>axis)start++;
         if(start<end)
         {
             num[end--]=num[start];
         }
-        
+         
     }
+    printf("%d\n",start);
     num[start]=axis;
     return start;
 }
@@ -101,11 +102,15 @@ void TOPKNumDC(int num[],int size,int K,int result[])
 {
     int i=0;
     if(K<=0||K>size)
-        return;
+    { 
+        perror("error!");
+        return;}
     int axis =0;
     int start =0,end = size-1;
+   
     while (axis!=K-1) {
         axis = partittion(num, start, end);
+       
         print(num, size);
         if(axis>K-1)
         {
