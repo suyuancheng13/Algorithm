@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E511FB1E19D99901005DBB4D /* leftMove.c in Sources */ = {isa = PBXBuildFile; fileRef = E511FB1D19D99901005DBB4D /* leftMove.c */; };
+		E57F8E7A1A2977B300568989 /* PSO.c in Sources */ = {isa = PBXBuildFile; fileRef = E57F8E791A2977B300568989 /* PSO.c */; };
 		E586184119E4DFB500B27124 /* TrieTree.c in Sources */ = {isa = PBXBuildFile; fileRef = E586184019E4DFB500B27124 /* TrieTree.c */; };
 		E5AFA48619D98B1300EB155E /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = E5AFA48519D98B1300EB155E /* main.c */; };
 		E5AFA48819D98B1300EB155E /* Algorithm.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = E5AFA48719D98B1300EB155E /* Algorithm.1 */; };
@@ -30,6 +31,8 @@
 /* Begin PBXFileReference section */
 		E511FB1919D998DD005DBB4D /* leftMove.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = leftMove.h; sourceTree = "<group>"; };
 		E511FB1D19D99901005DBB4D /* leftMove.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = leftMove.c; sourceTree = "<group>"; };
+		E57F8E791A2977B300568989 /* PSO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = PSO.c; sourceTree = "<group>"; };
+		E57F8E7C1A2977CA00568989 /* PSO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PSO.h; sourceTree = "<group>"; };
 		E586183E19E4DFAA00B27124 /* TrieTree.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrieTree.h; sourceTree = "<group>"; };
 		E586184019E4DFB500B27124 /* TrieTree.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TrieTree.c; sourceTree = "<group>"; };
 		E5AFA48119D98B1300EB155E /* Algorithm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Algorithm; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -56,6 +59,7 @@
 				E511FB1919D998DD005DBB4D /* leftMove.h */,
 				E5D5479219DA40F80012B83D /* TopKNum.h */,
 				E586183E19E4DFAA00B27124 /* TrieTree.h */,
+				E57F8E7C1A2977CA00568989 /* PSO.h */,
 			);
 			name = header;
 			sourceTree = "<group>";
@@ -65,6 +69,7 @@
 			children = (
 				E511FB1D19D99901005DBB4D /* leftMove.c */,
 				E5D5479419DA41090012B83D /* TopKNum.c */,
+				E57F8E791A2977B300568989 /* PSO.c */,
 				E586184019E4DFB500B27124 /* TrieTree.c */,
 			);
 			name = source;
@@ -151,6 +156,7 @@
 				E511FB1E19D99901005DBB4D /* leftMove.c in Sources */,
 				E5D5479519DA41090012B83D /* TopKNum.c in Sources */,
 				E586184119E4DFB500B27124 /* TrieTree.c in Sources */,
+				E57F8E7A1A2977B300568989 /* PSO.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
