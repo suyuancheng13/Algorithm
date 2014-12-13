@@ -11,6 +11,7 @@
 #include <time.h>
 #include <string.h>
 #include <stdio.h>
+#include "LCS.h"
 int * re()
 {
     int a = 10;
@@ -33,12 +34,12 @@ int main(int argc, const char * argv[])
     /*
      test the top k numbers function
      */
-    int * p =NULL;
-    char *c=NULL;
-   p = re();
-    sta();
-   // memset(&c,0,100*sizeof(int));
-    printf("%d",*p);
+//    int * p =NULL;
+//    char *c=NULL;
+//   p = re();
+//    sta();
+//   // memset(&c,0,100*sizeof(int));
+//    printf("%d",*p);
 //    int num[16];
 //    int result[6];
 //    srand(time(NULL));
@@ -54,6 +55,17 @@ int main(int argc, const char * argv[])
 //    {
 //        printf("%d,",result[i]);
 //    }
+    
+    
+    
+    /*
+     LCS test
+     */
+    char *a = "BDCABA";
+    char *b = "ABCBDAB";
+    int **c = LCS(a, b);
+    printf("%d",c[strlen(a)][strlen(b)]);
+    freeMem(c, strlen(a));
     return 0;
 }
 

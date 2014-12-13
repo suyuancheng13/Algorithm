@@ -13,6 +13,7 @@
 		E5AFA48619D98B1300EB155E /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = E5AFA48519D98B1300EB155E /* main.c */; };
 		E5AFA48819D98B1300EB155E /* Algorithm.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = E5AFA48719D98B1300EB155E /* Algorithm.1 */; };
 		E5D5479519DA41090012B83D /* TopKNum.c in Sources */ = {isa = PBXBuildFile; fileRef = E5D5479419DA41090012B83D /* TopKNum.c */; };
+		E5F0587F1A3A8CAC00C15048 /* LCS.c in Sources */ = {isa = PBXBuildFile; fileRef = E5F0587E1A3A8CAC00C15048 /* LCS.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,6 +41,8 @@
 		E5AFA48719D98B1300EB155E /* Algorithm.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Algorithm.1; sourceTree = "<group>"; };
 		E5D5479219DA40F80012B83D /* TopKNum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TopKNum.h; sourceTree = "<group>"; };
 		E5D5479419DA41090012B83D /* TopKNum.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TopKNum.c; sourceTree = "<group>"; };
+		E5F0587C1A3A8C9F00C15048 /* LCS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LCS.h; sourceTree = "<group>"; };
+		E5F0587E1A3A8CAC00C15048 /* LCS.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LCS.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +63,7 @@
 				E5D5479219DA40F80012B83D /* TopKNum.h */,
 				E586183E19E4DFAA00B27124 /* TrieTree.h */,
 				E57F8E7C1A2977CA00568989 /* PSO.h */,
+				E5F0587C1A3A8C9F00C15048 /* LCS.h */,
 			);
 			name = header;
 			sourceTree = "<group>";
@@ -71,6 +75,7 @@
 				E5D5479419DA41090012B83D /* TopKNum.c */,
 				E57F8E791A2977B300568989 /* PSO.c */,
 				E586184019E4DFB500B27124 /* TrieTree.c */,
+				E5F0587E1A3A8CAC00C15048 /* LCS.c */,
 			);
 			name = source;
 			sourceTree = "<group>";
@@ -157,6 +162,7 @@
 				E5D5479519DA41090012B83D /* TopKNum.c in Sources */,
 				E586184119E4DFB500B27124 /* TrieTree.c in Sources */,
 				E57F8E7A1A2977B300568989 /* PSO.c in Sources */,
+				E5F0587F1A3A8CAC00C15048 /* LCS.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
