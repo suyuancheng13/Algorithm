@@ -25,7 +25,7 @@ void sta()
     int a =14546;
     int *qp = &a;
 }
-int main(int argc, const char * argv[])
+int mmain(int argc, const char * argv[])
 {
    // char string[] = "suyuancheng";
 
