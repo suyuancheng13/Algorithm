@@ -46,30 +46,31 @@ int main(int argc, char* argv[])
 
 	
 	// maximum no of iterations during training
-	long num_iter = 2000;
-
+	long num_iter = 200;
+//	long i;
 	
 	// Creating the net
 	CBackProp *bp = new CBackProp(numLayers, lSz, beta, alpha);
 	
 	cout<< endl <<  "Now training the network...." << endl;	
-	for (long i=0; i<num_iter ; i++)
+	for ( i=0; i<num_iter ; i++)
 	{
 		
 		bp->bpgt_pso(data[i%8], &data[i%8][3]);
 
-		if( bp->mse(&data[i%8][3]) < Thresh) {
-			cout << endl << "Network Trained. Threshold value achieved in " << i << " iterations." << endl;
-			cout << "MSE:  " << bp->mse(&data[i%8][3]) 
-				 <<  endl <<  endl;
-			break;
-		}
-		if ( i%(num_iter/10) == 0 )
+		//if( bp->mse(&data[i%8][3]) < Thresh) {
+		//	cout << endl << "Network Trained. Threshold value achieved in " << i << " iterations." << endl;
+		//	cout << "MSE:  " << bp->mse(&data[i%8][3]) 
+		//		 <<  endl <<  endl;
+		//	break;
+		//}
+		//if ( i%(num_iter/10) == 0 )
+		bp->ffwd(data[i%8]);
 			cout<<  endl <<  "MSE:  " << bp->mse(&data[i%8][3]) 
 				<< "... Training..." << endl;
 
 	}
-	
+	cout<<"iterator:"<<i<<endl;
 	if ( i == num_iter )
 		cout << endl << i << " iterations completed..." 
 		<< "MSE: " << bp->mse(&data[(i-1)%8][3]) << endl;  	

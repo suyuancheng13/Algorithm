@@ -18,8 +18,9 @@
 class CBackProp{
 
 //	output of each neuron
+public:
 	double **out;
-
+private:
 //	delta error value for each neuron
 	double **delta;
 
@@ -49,7 +50,8 @@ class CBackProp{
 
 // pso engine
 	PSO	*psoEngine;
-
+	double *target;
+	bool  isInitial;
 public:
 
 	~CBackProp();
@@ -74,7 +76,7 @@ public:
 	double Out(int i) const;
 
 	//copy the weight from particle
-	void  getWeightFromPSO();
+	void  getWeightFromPSO(int index);
 };
 
 #endif
