@@ -4,7 +4,7 @@
 
 
 //	initializes and allocates memory on heap
-CBackProp::CBackProp(int nl,int *sz,double b,double a):beta(b),alpha(a),isInitial(true)
+CBackProp::CBackProp(int nl,int *sz,double b,double a):beta(b),alpha(a)
 {
 	
 	//	set no of layers and their sizes
@@ -66,7 +66,7 @@ CBackProp::CBackProp(int nl,int *sz,double b,double a):beta(b),alpha(a),isInitia
 		for(int j=0;j<lsize[i];j++)
 			for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
 				{
-					weight[i][j][k]=0;// (double)(rand())/(RAND_MAX/2) - 1;//32767
+					weight[i][j][k]= (double)(rand())/(RAND_MAX/2) - 1;//32767
 					//if(k < lsize[i-1])
 						dim++;
 			}
@@ -92,10 +92,7 @@ CBackProp::CBackProp(int nl,int *sz,double b,double a):beta(b),alpha(a),isInitia
 	/*
 	* initial the engine of pso
 	*/
-
 	psoEngine = new PSO(dim,60,*this);
-	
-
 }
 
 
@@ -145,7 +142,6 @@ double CBackProp::mse(double *tgt) const
 	double mse=0;
 	for(int i=0;i<lsize[numl-1];i++){
 		mse+=(tgt[i]-out[numl-1][i])*(tgt[i]-out[numl-1][i]);
-		
 	}
 	return mse/2;
 }
@@ -234,15 +230,15 @@ void CBackProp::bpgt(double *in,double *tgt)
 /*
 * get the weight from particles
 */
-void CBackProp::getWeightFromPSO(int index)
+void CBackProp::getWeightFromPSO()
 {
 	int dim = 0;
 	for(int i=1;i<numl;i++)
 		for(int j=0;j<lsize[i];j++)
 			{for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
 				{
-					weight[i][j][k]= psoEngine->particles[index].position[dim++];//(double)(rand())/(RAND_MAX/2) - 1;//32767
-					//printf("%lf,",weight[i][j][k]);
+					weight[i][j][k]= psoEngine->gbest[dim++];//(double)(rand())/(RAND_MAX/2) - 1;//32767
+				//	printf("%lf,",weight[i][j][k]);
 			}
 			//printf("\n");
 		}
@@ -255,39 +251,19 @@ void CBackProp::bpgt_pso(double *in,double *tgt )
 {
 	//	update output values for each neuron
 	
-	if(isInitial)
+	psoEngine->limit_PSO();
+	psoEngine->initial_PSO(tgt);
+	getWeightFromPSO();
+	psoEngine->initialBest();
+	for(int i =0 ;i<10;i++)
 	{
-		psoEngine->limit_PSO();
-		psoEngine->initial_PSO(in,tgt);
-		psoEngine->initialBest();
-		isInitial = false;
-	}
-	psoEngine->in = in;
-	psoEngine->tgt = tgt;
-	
-	for(int i =0 ;i<psoEngine->Tmax;i++)
-	{
-		//getWeightFromPSO();
-		//ffwd(in);
-
-		if(psoEngine->glbest==0)
-			break;
+		getWeightFromPSO();
+		ffwd(in);
 		psoEngine->update_Interweight();
 		psoEngine->update_speed();
 		psoEngine->update_position();
 		psoEngine->update_gbest();
-		psoEngine->T++;
 	}
-	//printf("%d\n",psoEngine->glbindex);
-	int dim = 0;
-	for(int i=1;i<numl;i++)
-		for(int j=0;j<lsize[i];j++)
-			{for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
-				{
-					weight[i][j][k]= psoEngine->gbest[dim++];//(double)(rand())/(RAND_MAX/2) - 1;//32767
-				//	printf("%lf,",weight[i][j][k]);
-			}
-			//printf("\n");
-		}
+	getWeightFromPSO();
 
 }
