@@ -32,6 +32,7 @@ public:
 	void update_speed();
 	void update_position();
 	void update_Interweight();
+	void Print();
 private:
 	int Dim;
 	int number;

@@ -175,10 +175,12 @@ void CBackProp::ffwd(double *in)
 			for(int k=0;k<lsize[i-1];k++){		// For input from each neuron in preceeding layer
 				sum+= out[i-1][k]*weight[i][j][k];	// Apply weight to inputs and add to sum
 			}
+		//	printf("\t:%lf",weight[i][j][lsize[i-1]]);
 			sum+=weight[i][j][lsize[i-1]];		// Apply bias
 			out[i][j]=sigmoid(sum);				// Apply sigmoid function
 		}
 	}
+	printf("\noutput is :%lf",out[lsize[numl-1]][0]);
 }
 
 
@@ -262,22 +264,32 @@ void CBackProp::bpgt_pso(double *in,double *tgt )
 		psoEngine->initialBest();
 		isInitial = false;
 	}
+
 	psoEngine->in = in;
 	psoEngine->tgt = tgt;
+	/*
+	对于每一组输入都要更新最优值，否则可能因为对前一组输入值更优导致无法更新
+	*/
+	psoEngine->initialBest();
 	
-	for(int i =0 ;i<psoEngine->Tmax;i++)
+	for(;psoEngine->T++<psoEngine->Tmax;)
 	{
 		//getWeightFromPSO();
 		//ffwd(in);
 
-		if(psoEngine->glbest==0)
-			break;
+		if(psoEngine->glbest<0.0001)
+		{
+				printf("\nachived in pso\n");
+				break;
+		}
 		psoEngine->update_Interweight();
 		psoEngine->update_speed();
 		psoEngine->update_position();
 		psoEngine->update_gbest();
-		psoEngine->T++;
+		
 	}
+	psoEngine->T=0;
+//	psoEngine->Print();
 	//printf("%d\n",psoEngine->glbindex);
 	int dim = 0;
 	for(int i=1;i<numl;i++)
@@ -285,9 +297,10 @@ void CBackProp::bpgt_pso(double *in,double *tgt )
 			{for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
 				{
 					weight[i][j][k]= psoEngine->gbest[dim++];//(double)(rand())/(RAND_MAX/2) - 1;//32767
-				//	printf("%lf,",weight[i][j][k]);
+					//printf("\t%lf,",weight[i][j][k]);
 			}
 			//printf("\n");
 		}
-
+	ffwd(in);
+	//printf("\tmse::%lf,",mse(tgt));
 }

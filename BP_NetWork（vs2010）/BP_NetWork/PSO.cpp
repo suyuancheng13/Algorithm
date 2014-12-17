@@ -12,7 +12,7 @@ PSO::PSO(int _Dim,int _Number,CBackProp &_bp):Dim(_Dim),number(_Number),bp(_bp)
 	 wmin=0.4;//最小惯性权重
 
 	 T=0;//当前迭代次数
-	 Tmax=10;//最大迭代次数
+	 Tmax=100;//最大迭代次数
 
 	 pmax=0;//粒子位置上界
 	 pmin=0;//粒子位置下界
@@ -57,9 +57,9 @@ void PSO::fitness(){//求适应度
 		bp.getWeightFromPSO(i);
 		bp.ffwd(in);
 		particles[i].fitness= bp.mse(tgt);
-		printf("\t%lf,",particles[i].fitness);
+		//printf("\t%lf,",particles[i].fitness);
 	}
-	printf("one time\n");
+	//printf("one time\n");
 }
 
 void PSO::limit_PSO(){//输入粒子的速度和位置信息
@@ -80,8 +80,9 @@ void PSO::initial_PSO(double *_in,double *_tgt){//初始化粒子
 			particles[i].v[j]=(double((double)(rand()%(int)(16384)/(16383.0))));//粒子的各维速度
 			particles[i].position[j]=(rand()%100/99.0)*(pmax-pmin)+(pmin);//粒子的位置
 			particles[i].pbest[j]=particles[i].position[j];
-			//printf("%d 's initial speed is%lf\n",i,particles[i].v[j]);
-			//printf("%d 's initial postition is%lf\n",i,particles[i].position[j]);
+			/*printf("%d 's initial speed is%lf\n",i,particles[i].v[j]);
+			printf("%d 's initial postition is%lf\n",i,particles[i].position[j]);
+			*/
 		}
 	}
 }
@@ -120,6 +121,7 @@ void PSO::update_Interweight(){//更新粒子的惯性权重,线性递减。
 
 void PSO::update_speed(){//更新粒子的的速度
 	int i,j;
+	srand((unsigned)(time(NULL)));
 	m=(double((double)(rand()%(int)(16384)/(16383.0))));
 	n=(double((double)(rand()%(int)(16384)/(16383.0))));
 	
@@ -130,6 +132,8 @@ void PSO::update_speed(){//更新粒子的的速度
 			particles[i].v[j]=w*particles[i].v[j]+c1*m*(particles[i].pbest[j]-particles[i].position[j])+c2*n*(gbest[j]-particles[i].position[j]);
 		    if(particles[i].v[j]>vmax)
 				particles[i].v[j]=vmax;
+			if(particles[i].v[j]<-vmax)
+				particles[i].v[j]=-vmax;
 			//printf("%d,speed %.10lf\n",i,particles[i].v[j]);
 		}
 	
@@ -181,7 +185,18 @@ void PSO::update_gbest(){//更新全体粒子的全局最优位置
 	}
 	
 
-  printf("\n%d,%.9f\n",glbindex,glbest);
+ // printf("\n%d,%.9f\n",glbindex,glbest);
      
 	return;
+}
+void PSO::Print()
+{
+	 int i,j;
+	//for(i=0;i<number;i++){                                          
+		for(j=0;j<Dim;j++)
+		{	
+		
+			printf("\t%.10lf",gbest[j]);
+		}
+	
 }

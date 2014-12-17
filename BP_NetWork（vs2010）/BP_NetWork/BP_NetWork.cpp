@@ -64,8 +64,8 @@ int main(int argc, char* argv[])
 		//		 <<  endl <<  endl;
 		//	break;
 		//}
-		//if ( i%(num_iter/10) == 0 )
-		bp->ffwd(data[i%8]);
+		if ( i%(num_iter/10) == 0 )
+		//bp->ffwd(data[i%8]);
 			cout<<  endl <<  "MSE:  " << bp->mse(&data[i%8][3]) 
 				<< "... Training..." << endl;
 
