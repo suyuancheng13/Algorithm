@@ -1,60 +1,69 @@
-//
-//  PSO.h
-//  Algorithm
-//
-//  Created by Suyuancheng on 14-11-29.
-//  Copyright (c) 2014å¹´ __MyCompanyName__. All rights reserved.
-//
-
-#ifndef Algorithm_PSO_h
-#define Algorithm_PSO_h
-
-#define Dim 10//ç²’å­ç»´æ•°
-#define number 60//ç²’å­ä¸ªæ•°
-
+#pragma once
+#include<stdio.h>
+#include<math.h>
+#include<stdlib.h>
+#include<time.h>
+#include<vector>
+#include"Particle.h"
+using namespace std;
 #define Pi 3.1415926
+/*
+* particle swarm class
+*/
+class CBackProp;
+class PSO
+{
+public:
+	PSO(int _Dim,int _Number,CBackProp &_bp);
+	~PSO();
+	/*~PSO()
+	{
+		delete[] gbest;
 
-double c1=2;//ç²’å­è‡ªèº«çš„è®¤è¯†
-double c2=2;//ç²’å­æ•´ä¸ªç¾¤ä½“çš„è®¤è¯†
+		free( particles);
+	}*/
+public:
+	void fitness();
+	void limit_PSO();//¶¯Ì¬Çø¼äµÄÉèÖÃ
+	void initial_PSO(double *_tgt);
+	void initialBest();
+	void update_gbest();
+	void update_speed();
+	void update_position();
+	void update_Interweight();
+private:
+	int Dim;
+	int number;
 
-double w;//æƒ¯æ€§æƒé‡
-double wmax=0.9;//æœ€å¤§æƒ¯æ€§æƒé‡
-double wmin=0.4;//æœ€å°æƒ¯æ€§æƒé‡
+	//
+	double c1;//Á£×Ó×ÔÉíµÄÈÏÊ¶
+	double c2;//Á£×ÓÕû¸öÈºÌåµÄÈÏÊ¶
 
-int T;//å½“å‰è¿­ä»£æ¬¡æ•°
-int Tmax=1000;//æœ€å¤§è¿­ä»£æ¬¡æ•°
+	double w;//¹ßĞÔÈ¨ÖØ
+	double wmax;//×î´ó¹ßĞÔÈ¨ÖØ
+	double wmin;//×îĞ¡¹ßĞÔÈ¨ÖØ
 
-float pmax;//ç²’å­ä½ç½®ä¸Šç•Œ
-float pmin;//ç²’å­ä½ç½®ä¸‹ç•Œ
+	int T;//µ±Ç°µü´ú´ÎÊı
+	int Tmax;//×î´óµü´ú´ÎÊı
 
-double vmax;//é€Ÿåº¦æœ€å¤§å€¼
+	float pmax;//Á£×ÓÎ»ÖÃÉÏ½ç
+	float pmin;//Á£×ÓÎ»ÖÃÏÂ½ç
 
+	double vmax;//ËÙ¶È×î´óÖµ
 
-int glbindex;//ç²’å­æœ€å¥½é€‚åº”åº¦ç¼–å·
-double gbest[Dim];//å…¨å±€æœ€ä¼˜è§£
-double glbest;//æœ€å¥½é€‚åº”åº¦
+public:
+	int glbindex;//Á£×Ó×îºÃÊÊÓ¦¶È±àºÅ
+	double *gbest;//È«¾Ö×îÓÅ½â
+	double glbest;//×îºÃÊÊÓ¦¶È
+private:
+	double m;//½éÓÚ1£¬0Ö®¼äµÄËæ»úÊı
+	double n;//½éÓÚ1£¬0Ö®¼äµÄËæ»úÊı
 
-double m;//ä»‹äº1ï¼Œ0ä¹‹é—´çš„éšæœºæ•°
-double n;//ä»‹äº1ï¼Œ0ä¹‹é—´çš„éšæœºæ•°
-
-typedef struct{
-	double v[Dim];//ç²’å­æœ¬èº«é€Ÿåº¦
-	double position[Dim];//ç²’å­ä½ç½®
-	double pbest[Dim];//ç²’å­æœ¬èº«æœ€ä¼˜è§£
-    
-	double fitness;//ç²’å­é€‚åº”åº¦
-	double bestfitness;//ç²’å­å†å²æœ€å¥½é€‚åº”åº¦
-    
-}particle;
-
-particle particles[number];
-
-
-void fitness();
-void limit_PSO(float max,float min);//åŠ¨æ€åŒºé—´çš„è®¾ç½®
-void initial_PSO();
-void update_gbest();
-void update_speed();
-void update_position();
-void update_Interweight();//æ›´æ–°æƒé‡
-#endif
+	//bp 
+	CBackProp &bp;
+	//taret from bp network
+	double *tgt;
+public:
+	/*vector<Particle> particles;*/
+	Particle *particles;
+};
