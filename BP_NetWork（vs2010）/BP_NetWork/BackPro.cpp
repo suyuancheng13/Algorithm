@@ -66,8 +66,9 @@ CBackProp::CBackProp(int nl,int *sz,double b,double a):beta(b),alpha(a),isInitia
 		for(int j=0;j<lsize[i];j++)
 			for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
 				{
-					weight[i][j][k]=0;// (double)(rand())/(RAND_MAX/2) - 1;//32767
+					weight[i][j][k]= 0;//(double)(rand())/(RAND_MAX/2) - 1;//32767
 					//if(k < lsize[i-1])
+					//printf("%lf",weight[i][j][k]);
 						dim++;
 			}
 
@@ -93,7 +94,7 @@ CBackProp::CBackProp(int nl,int *sz,double b,double a):beta(b),alpha(a),isInitia
 	* initial the engine of pso
 	*/
 
-	psoEngine = new PSO(dim,60,*this);
+	psoEngine = new PSO(dim,30,*this);
 	
 
 }
@@ -136,7 +137,7 @@ CBackProp::~CBackProp()
 //	sigmoid function
 double CBackProp::sigmoid(double in)
 {
-		return (double)(1/(1+exp(-in)));
+		return (double)(2/(1+exp(-2*in))-1);
 }
 
 //	mean square error
@@ -145,7 +146,7 @@ double CBackProp::mse(double *tgt) const
 	double mse=0;
 	for(int i=0;i<lsize[numl-1];i++){
 		mse+=(tgt[i]-out[numl-1][i])*(tgt[i]-out[numl-1][i]);
-		
+		//printf("target:%lf\n",tgt[i]);
 	}
 	return mse/2;
 }
@@ -162,10 +163,12 @@ void CBackProp::ffwd(double *in)
 {
 	double sum;
 	int i=0;
-
+	
 	//	assign content to input layer
 	for(int i=0;i<lsize[0];i++)
-		out[0][i]=in[i];  // output_from_neuron(i,j) Jth neuron in Ith Layer
+	{	out[0][i]=in[i];  // output_from_neuron(i,j) Jth neuron in Ith Layer
+	
+	}
 
 	//	assign output(activation) value 
 	//	to each neuron usng sigmoid func
@@ -175,12 +178,13 @@ void CBackProp::ffwd(double *in)
 			for(int k=0;k<lsize[i-1];k++){		// For input from each neuron in preceeding layer
 				sum+= out[i-1][k]*weight[i][j][k];	// Apply weight to inputs and add to sum
 			}
-		//	printf("\t:%lf",weight[i][j][lsize[i-1]]);
+		
 			sum+=weight[i][j][lsize[i-1]];		// Apply bias
 			out[i][j]=sigmoid(sum);				// Apply sigmoid function
+		
 		}
 	}
-	printf("\noutput is :%lf",out[lsize[numl-1]][0]);
+	//printf("\noutput is :%lf",out[lsize[numl-1]][0]);
 }
 
 
@@ -261,24 +265,25 @@ void CBackProp::bpgt_pso(double *in,double *tgt )
 	{
 		psoEngine->limit_PSO();
 		psoEngine->initial_PSO(in,tgt);
-		psoEngine->initialBest();
+		psoEngine->initialBest(isInitial);
 		isInitial = false;
 	}
 
-	psoEngine->in = in;
-	psoEngine->tgt = tgt;
-	/*
-	对于每一组输入都要更新最优值，否则可能因为对前一组输入值更优导致无法更新
-	*/
-	psoEngine->initialBest();
+	//psoEngine->in = in;
+	//psoEngine->tgt = tgt;
+	///*
+	//对于每一组输入都要更新最优值，否则可能因为对前一组输入值更优导致无法更新
+	//*/
+	//psoEngine->initialBest(isInitial);
 	
 	for(;psoEngine->T++<psoEngine->Tmax;)
 	{
 		//getWeightFromPSO();
 		//ffwd(in);
 
-		if(psoEngine->glbest<0.0001)
+		if(psoEngine->glbest<0.00001)
 		{
+			//printf("%d\n",psoEngine->glbindex);
 				printf("\nachived in pso\n");
 				break;
 		}
@@ -301,6 +306,5 @@ void CBackProp::bpgt_pso(double *in,double *tgt )
 			}
 			//printf("\n");
 		}
-	ffwd(in);
-	//printf("\tmse::%lf,",mse(tgt));
+
 }

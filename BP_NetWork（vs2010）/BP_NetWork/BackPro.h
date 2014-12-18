@@ -49,11 +49,11 @@ private:
 	double sigmoid(double in);
 
 // pso engine
-	PSO	*psoEngine;
+	
 	double *target;
 	bool  isInitial;
 public:
-
+	PSO	*psoEngine;
 	~CBackProp();
 
 //	initializes and allocates memory

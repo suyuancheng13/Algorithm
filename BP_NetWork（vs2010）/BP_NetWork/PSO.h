@@ -27,7 +27,7 @@ public:
 	void fitness();
 	void limit_PSO();//动态区间的设置
 	void initial_PSO(double *_in,double *_tgt);
-	void initialBest();
+	void initialBest(bool _initial);
 	void update_gbest();
 	void update_speed();
 	void update_position();
