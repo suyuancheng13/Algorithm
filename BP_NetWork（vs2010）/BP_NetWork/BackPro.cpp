@@ -4,7 +4,7 @@
 
 
 //	initializes and allocates memory on heap
-CBackProp::CBackProp(int nl,int *sz,double b,double a):beta(b),alpha(a),isInitial(true)
+CBackProp::CBackProp(int nl,int *sz,int _iterator,double _thresh,int inputn,double b,double a):beta(b),alpha(a),isInitial(true),iterator(_iterator),	Thresh(_thresh),inputN(inputn)
 {
 	
 	//	set no of layers and their sizes
@@ -67,8 +67,6 @@ CBackProp::CBackProp(int nl,int *sz,double b,double a):beta(b),alpha(a),isInitia
 			for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
 				{
 					weight[i][j][k]= 0;//(double)(rand())/(RAND_MAX/2) - 1;//32767
-					//if(k < lsize[i-1])
-					//printf("%lf",weight[i][j][k]);
 						dim++;
 			}
 
@@ -94,7 +92,7 @@ CBackProp::CBackProp(int nl,int *sz,double b,double a):beta(b),alpha(a),isInitia
 	* initial the engine of pso
 	*/
 
-	psoEngine = new PSO(dim,30,*this);
+	psoEngine = new PSO(dim,60,*this);
 	
 
 }
@@ -137,16 +135,18 @@ CBackProp::~CBackProp()
 //	sigmoid function
 double CBackProp::sigmoid(double in)
 {
-		return (double)(2/(1+exp(-2*in))-1);
+		return (double)(2/(1+exp(-2*in))-1);//tansig sigmoid function
 }
-
+double CBackProp::purelin(double in)
+{
+	return in;
+}
 //	mean square error
 double CBackProp::mse(double *tgt) const
 {
 	double mse=0;
 	for(int i=0;i<lsize[numl-1];i++){
 		mse+=(tgt[i]-out[numl-1][i])*(tgt[i]-out[numl-1][i]);
-		//printf("target:%lf\n",tgt[i]);
 	}
 	return mse/2;
 }
@@ -166,7 +166,8 @@ void CBackProp::ffwd(double *in)
 	
 	//	assign content to input layer
 	for(int i=0;i<lsize[0];i++)
-	{	out[0][i]=in[i];  // output_from_neuron(i,j) Jth neuron in Ith Layer
+	{	
+		out[0][i]=in[i];  // output_from_neuron(i,j) Jth neuron in Ith Layer
 	
 	}
 
@@ -180,11 +181,13 @@ void CBackProp::ffwd(double *in)
 			}
 		
 			sum+=weight[i][j][lsize[i-1]];		// Apply bias
-			out[i][j]=sigmoid(sum);				// Apply sigmoid function
-		
+			if(i<numl-1)
+				out[i][j]=sigmoid(sum);				// Apply sigmoid function
+			else
+				out[i][j]=purelin(sum);				//The output sigmoid function is purelin 
+																	//to ensure output every function result
 		}
 	}
-	//printf("\noutput is :%lf",out[lsize[numl-1]][0]);
 }
 
 
@@ -247,12 +250,9 @@ void CBackProp::getWeightFromPSO(int index)
 		for(int j=0;j<lsize[i];j++)
 			{for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
 				{
-					weight[i][j][k]= psoEngine->particles[index].position[dim++];//(double)(rand())/(RAND_MAX/2) - 1;//32767
-					//printf("%lf,",weight[i][j][k]);
+					weight[i][j][k]= psoEngine->particles[index].position[dim++];
 			}
-			//printf("\n");
 		}
-		//printf("///////////////");
 }
 /*
 *using pso to adjust the weight
@@ -278,12 +278,10 @@ void CBackProp::bpgt_pso(double *in,double *tgt )
 	
 	for(;psoEngine->T++<psoEngine->Tmax;)
 	{
-		//getWeightFromPSO();
-		//ffwd(in);
 
-		if(psoEngine->glbest<0.00001)
+		printf("Epoch:%d\n",psoEngine->T);
+		if(psoEngine->glbest<Thresh)
 		{
-			//printf("%d\n",psoEngine->glbindex);
 				printf("\nachived in pso\n");
 				break;
 		}
@@ -292,19 +290,17 @@ void CBackProp::bpgt_pso(double *in,double *tgt )
 		psoEngine->update_position();
 		psoEngine->update_gbest();
 		
+		
 	}
 	psoEngine->T=0;
-//	psoEngine->Print();
-	//printf("%d\n",psoEngine->glbindex);
 	int dim = 0;
 	for(int i=1;i<numl;i++)
 		for(int j=0;j<lsize[i];j++)
-			{for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
+			{
+				for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
 				{
-					weight[i][j][k]= psoEngine->gbest[dim++];//(double)(rand())/(RAND_MAX/2) - 1;//32767
-					//printf("\t%lf,",weight[i][j][k]);
-			}
-			//printf("\n");
+					weight[i][j][k]= psoEngine->gbest[dim++];
+				}
 		}
 
 }

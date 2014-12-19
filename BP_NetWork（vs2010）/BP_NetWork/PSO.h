@@ -61,7 +61,7 @@ public:
 private:
 	double m;//介于1，0之间的随机数
 	double n;//介于1，0之间的随机数
-
+	FILE *out;
 	//bp 
 	CBackProp &bp;
 

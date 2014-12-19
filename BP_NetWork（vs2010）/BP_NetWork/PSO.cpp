@@ -12,7 +12,7 @@ PSO::PSO(int _Dim,int _Number,CBackProp &_bp):Dim(_Dim),number(_Number),bp(_bp)
 	 wmin=0.4;//最小惯性权重
 
 	 T=0;//当前迭代次数
-	 Tmax=20000;//最大迭代次数
+	 Tmax=0;//最大迭代次数
 
 	 pmax=0;//粒子位置上界
 	 pmin=0;//粒子位置下界
@@ -36,7 +36,10 @@ PSO::PSO(int _Dim,int _Number,CBackProp &_bp):Dim(_Dim),number(_Number),bp(_bp)
 		 Particle p(Dim);
 		 particles[i] = p;
 	}
-		 	 
+		 	 /*
+			 write the result out
+			 */
+	// out = fopen("result.txt","a");
 }
 PSO::~PSO()
 {
@@ -56,26 +59,26 @@ void PSO::fitness(){//求适应度
 	for(i=0;i<number;i++){
 		sum = 0;
 		bp.getWeightFromPSO(i);
-		for(int j=0;j<8;j++){
-		//	printf("target is:%lf\n" ,(tgt+j)[0]);
-		//	printf("%lf,%lf,%lf\n",(in+j*3)[0],(in+j*3)[1],(in+j*3)[2]);
-			bp.ffwd(in+j*3);
-			sum += bp.mse(tgt+j);
+		for(int j=0;j<bp.inputN;j++){
+			//printf("%lf %lf\n",(tgt+j*bp.lsize[bp.numl-1])[0],(tgt+j*bp.lsize[bp.numl-1])[1]);
+			bp.ffwd((in+j*bp.lsize[0]));
+			sum += bp.mse((tgt+j*bp.lsize[bp.numl-1]));
 		}
 		particles[i].fitness =sum;
-		//printf("\t%lf,",particles[i].fitness);
+
 	}
-	//printf("one time\n");
+
 }
 
 void PSO::limit_PSO(){//输入粒子的速度和位置信息
 	float a= 10,b=-10;
-	pmax=a;pmin=b;vmax=4;
+	pmax=a;pmin=b;vmax=2.0;
 	return;
 }
 
 void PSO::initial_PSO(double *_in,double *_tgt){//初始化粒子
 	int i,j;
+	Tmax =  bp.iterator;
 	tgt = _tgt;
 	in = _in;
 	srand((unsigned)(time(NULL)));
@@ -84,7 +87,7 @@ void PSO::initial_PSO(double *_in,double *_tgt){//初始化粒子
 		for(j=0;j<Dim;j++)
 		{
 			particles[i].v[j]=vmax*1.0*rand()/RAND_MAX;//粒子的各维速度
-			particles[i].position[j]= 1.0*rand()/RAND_MAX*(pmax-pmin)+(pmin);;//粒子的位置
+			particles[i].position[j]= 1.0*rand()/RAND_MAX*(1-(-1))+(-1);;//粒子的位置
 			particles[i].pbest[j]=particles[i].position[j];
 			/*printf("%d 's initial speed is%lf\n",i,particles[i].v[j]);
 			printf("%d 's initial postition is%lf\n",i,particles[i].position[j]);
@@ -199,7 +202,7 @@ void PSO::update_gbest(){//更新全体粒子的全局最优位置
 		}
 	}
 	
-
+//	fprintf(out,"%lf ",glbest);
   printf("\n%d,%.9f\n",glbindex,glbest);
      
 	return;
