@@ -27,11 +27,12 @@ public:
 	void fitness();
 	void limit_PSO();//动态区间的设置
 	void initial_PSO(double *_in,double *_tgt);
-	void initialBest();
+	void initialBest(bool _initial);
 	void update_gbest();
 	void update_speed();
 	void update_position();
 	void update_Interweight();
+	void Print();
 private:
 	int Dim;
 	int number;
@@ -60,7 +61,7 @@ public:
 private:
 	double m;//介于1，0之间的随机数
 	double n;//介于1，0之间的随机数
-
+	FILE *out;
 	//bp 
 	CBackProp &bp;
 

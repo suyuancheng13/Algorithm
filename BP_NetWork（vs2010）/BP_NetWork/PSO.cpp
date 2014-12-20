@@ -12,7 +12,7 @@ PSO::PSO(int _Dim,int _Number,CBackProp &_bp):Dim(_Dim),number(_Number),bp(_bp)
 	 wmin=0.4;//最小惯性权重
 
 	 T=0;//当前迭代次数
-	 Tmax=10;//最大迭代次数
+	 Tmax=0;//最大迭代次数
 
 	 pmax=0;//粒子位置上界
 	 pmin=0;//粒子位置下界
@@ -22,7 +22,7 @@ PSO::PSO(int _Dim,int _Number,CBackProp &_bp):Dim(_Dim),number(_Number),bp(_bp)
 
 	 glbindex = -1;//粒子最好适应度编号
 	 gbest = new double[Dim];//全局最优解
-	 glbest = 1000;//最好适应度
+	 glbest = 200000;//最好适应度
 
 	 m = 0;//介于1，0之间的随机数
 	 n = 0;//介于1，0之间的随机数
@@ -36,7 +36,10 @@ PSO::PSO(int _Dim,int _Number,CBackProp &_bp):Dim(_Dim),number(_Number),bp(_bp)
 		 Particle p(Dim);
 		 particles[i] = p;
 	}
-		 	 
+		 	 /*
+			 write the result out
+			 */
+	// out = fopen("result.txt","a");
 }
 PSO::~PSO()
 {
@@ -54,22 +57,28 @@ void PSO::fitness(){//求适应度
 	int i,j;
 	double sum=0;
 	for(i=0;i<number;i++){
+		sum = 0;
 		bp.getWeightFromPSO(i);
-		bp.ffwd(in);
-		particles[i].fitness= bp.mse(tgt);
-		printf("\t%lf,",particles[i].fitness);
+		for(int j=0;j<bp.inputN;j++){
+			//printf("%lf %lf\n",(tgt+j*bp.lsize[bp.numl-1])[0],(tgt+j*bp.lsize[bp.numl-1])[1]);
+			bp.ffwd((in+j*bp.lsize[0]));
+			sum += bp.mse((tgt+j*bp.lsize[bp.numl-1]));
+		}
+		particles[i].fitness =sum;
+
 	}
-	printf("one time\n");
+
 }
 
 void PSO::limit_PSO(){//输入粒子的速度和位置信息
-	float a=2,b=0;
-	pmax=a;pmin=b;vmax=2;
+	float a= 10,b=-10;
+	pmax=a;pmin=b;vmax=2.0;
 	return;
 }
 
 void PSO::initial_PSO(double *_in,double *_tgt){//初始化粒子
 	int i,j;
+	Tmax =  bp.iterator;
 	tgt = _tgt;
 	in = _in;
 	srand((unsigned)(time(NULL)));
@@ -77,24 +86,31 @@ void PSO::initial_PSO(double *_in,double *_tgt){//初始化粒子
 	{
 		for(j=0;j<Dim;j++)
 		{
-			particles[i].v[j]=(double((double)(rand()%(int)(16384)/(16383.0))));//粒子的各维速度
-			particles[i].position[j]=(rand()%100/99.0)*(pmax-pmin)+(pmin);//粒子的位置
+			particles[i].v[j]=vmax*1.0*rand()/RAND_MAX;//粒子的各维速度
+			particles[i].position[j]= 1.0*rand()/RAND_MAX*(1-(-1))+(-1);;//粒子的位置
 			particles[i].pbest[j]=particles[i].position[j];
-			//printf("%d 's initial speed is%lf\n",i,particles[i].v[j]);
-			//printf("%d 's initial postition is%lf\n",i,particles[i].position[j]);
+			/*printf("%d 's initial speed is%lf\n",i,particles[i].v[j]);
+			printf("%d 's initial postition is%lf\n",i,particles[i].position[j]);
+			*/
 		}
 	}
 }
-void PSO::initialBest(){
+void PSO::initialBest(bool initial){
 	
 	int i =0,j=0;
 	fitness();
-	glbindex=0;//初始化时的粒子最好适应度编号
+	if(initial)
+		glbindex=0;//初始化时的粒子最好适应度编号
 	for(i=0;i<number;i++)//寻找最好的适应度的粒子
 	{
 		particles[i].bestfitness=particles[i].fitness;	
 		for(j=0;j<Dim;j++)
 				particles[i].pbest[j]=particles[i].position[j];//初始化时的个体最好位置
+	}
+	if(!initial)
+	{
+			glbest=particles[glbindex].bestfitness;
+			return;
 	}
 
 	double s=particles[glbindex].bestfitness;
@@ -120,6 +136,7 @@ void PSO::update_Interweight(){//更新粒子的惯性权重,线性递减。
 
 void PSO::update_speed(){//更新粒子的的速度
 	int i,j;
+	srand((unsigned)(time(NULL)));
 	m=(double((double)(rand()%(int)(16384)/(16383.0))));
 	n=(double((double)(rand()%(int)(16384)/(16383.0))));
 	
@@ -127,9 +144,13 @@ void PSO::update_speed(){//更新粒子的的速度
 	{
 		for(j=0;j<Dim;j++)
 		{ 
-			particles[i].v[j]=w*particles[i].v[j]+c1*m*(particles[i].pbest[j]-particles[i].position[j])+c2*n*(gbest[j]-particles[i].position[j]);
-		    if(particles[i].v[j]>vmax)
+			//particles[i].v[j]=w*particles[i].v[j]+c1*m*(particles[i].pbest[j]-particles[i].position[j])+c2*n*(gbest[j]-particles[i].position[j]);
+		 particles[i].v[j]=w*particles[i].v[j]+c1*1.0*rand()/RAND_MAX*(particles[i].pbest[j]-particles[i].position[j])
+				+c2*1.0*rand()/RAND_MAX*(gbest[j]-particles[i].position[j]);
+			if(particles[i].v[j]>vmax)
 				particles[i].v[j]=vmax;
+			if(particles[i].v[j]<-vmax)
+				particles[i].v[j]=-vmax;
 			//printf("%d,speed %.10lf\n",i,particles[i].v[j]);
 		}
 	
@@ -171,7 +192,8 @@ void PSO::update_gbest(){//更新全体粒子的全局最优位置
 	{
 		if(particles[i].bestfitness<glbest)
 		{
-				glbindex=i;glbest=particles[glbindex].bestfitness;
+				glbindex=i;
+				glbest=particles[glbindex].bestfitness;
 				for(int j=0;j<Dim;j++)
 				{
 					gbest[j]=particles[glbindex].pbest[j];
@@ -180,8 +202,19 @@ void PSO::update_gbest(){//更新全体粒子的全局最优位置
 		}
 	}
 	
-
+//	fprintf(out,"%lf ",glbest);
   printf("\n%d,%.9f\n",glbindex,glbest);
      
 	return;
+}
+void PSO::Print()
+{
+	 int i,j;
+	//for(i=0;i<number;i++){                                          
+		for(j=0;j<Dim;j++)
+		{	
+		
+			printf("\t%.10lf",gbest[j]);
+		}
+	
 }
