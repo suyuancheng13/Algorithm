@@ -39,7 +39,7 @@ PSO::PSO(int _Dim,int _Number,CBackProp &_bp):Dim(_Dim),number(_Number),bp(_bp)
 		 	 /*
 			 write the result out
 			 */
-	// out = fopen("result.txt","a");
+//	 out = fopen("/Users/suyuancheng/Desktop/Algorithm_GIT/Algorithm/result.txt","a");
 }
 PSO::~PSO()
 {
@@ -71,8 +71,8 @@ void PSO::fitness(){//求适应度
 }
 
 void PSO::limit_PSO(){//输入粒子的速度和位置信息
-	float a= 10,b=-10;
-	pmax=a;pmin=b;vmax=2.0;
+	float a= 5.0,b=-500.0;
+	pmax=a;pmin=b;vmax=1.50;
 	return;
 }
 
@@ -87,11 +87,11 @@ void PSO::initial_PSO(double *_in,double *_tgt){//初始化粒子
 		for(j=0;j<Dim;j++)
 		{
 			particles[i].v[j]=vmax*1.0*rand()/RAND_MAX;//粒子的各维速度
-			particles[i].position[j]= 1.0*rand()/RAND_MAX*(1-(-1))+(-1);;//粒子的位置
+			particles[i].position[j]= 1.0*rand()/RAND_MAX*(2)+(-1);//粒子的位置
 			particles[i].pbest[j]=particles[i].position[j];
-			/*printf("%d 's initial speed is%lf\n",i,particles[i].v[j]);
-			printf("%d 's initial postition is%lf\n",i,particles[i].position[j]);
-			*/
+//			printf("%d 's initial speed is%lf\n",i,particles[i].v[j]);
+//			printf("%d 's initial postition is%lf\n",i,particles[i].position[j]);
+			
 		}
 	}
 }
@@ -137,8 +137,8 @@ void PSO::update_Interweight(){//更新粒子的惯性权重,线性递减。
 void PSO::update_speed(){//更新粒子的的速度
 	int i,j;
 	srand((unsigned)(time(NULL)));
-	m=(double((double)(rand()%(int)(16384)/(16383.0))));
-	n=(double((double)(rand()%(int)(16384)/(16383.0))));
+//	m=(double((double)(rand()%(int)(16384)/(16383.0))));
+//	n=(double((double)(rand()%(int)(16384)/(16383.0))));
 	
 	for(i=0;i<number;i++)
 	{

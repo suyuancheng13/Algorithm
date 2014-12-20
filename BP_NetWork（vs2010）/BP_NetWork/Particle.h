@@ -4,12 +4,12 @@ class Particle
 {
 public:
 	Particle(int Dim);
-	/*~Particle()
+	~Particle()
 	{
-		delete[] v;
-		delete[] position;
-		delete[] pbest;
-	}*/
+//		delete[] v;
+//		delete[] position;
+//		delete[] pbest;
+	}
 
 	double *v;//粒子本身速度
 	double *position;//粒子位置

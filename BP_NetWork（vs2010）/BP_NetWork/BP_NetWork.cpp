@@ -54,6 +54,7 @@ using namespace std;
 
 	// prepare XOR traing data
 	int i=0;
+
 	double data[][4]={
 				0,	0,	0,	0,
 				0,	0,	1,	1,
@@ -84,18 +85,31 @@ using namespace std;
                                 1,      0,      1,
                                 1,      1,      0,
                                 1,      1,      1};
-	int numLayers = 3, lSz[3] = {2,12,1};
+	int numLayers = 4, lSz[4] = {3,8,3,2};
 
 	// Learing rate - beta
 	// momentum - alpha
 	// Threshhold - thresh (value of target mse, training stops once it is achieved)
-	double beta = 0.3, alpha = 0.1, Thresh =  0.000001;
+	double beta = 0.3, alpha = 0.1, Thresh =  0.0001;
 
 	
 	// maximum no of iterations during training
 	long num_iter = 1;
-	int inputn = 4;
+	int inputn = 8;
 	
+//    double s=0;
+//    int ii=0;
+//    for(;;)
+//    {
+//        s= (2/(1+exp(2*ii))-1);
+//        //double ss = exp(2*ii++);
+//        if(s<-0.95)
+//            break;
+//        ii++;
+//        //printf("%lf,",s);
+//        
+//    }
+//    printf("%d",ii);
 	// Creating the net
 	CBackProp *bp = new CBackProp(numLayers, lSz, 10000,Thresh,inputn,beta, alpha);
 
@@ -105,8 +119,8 @@ using namespace std;
 		/*
 		  二维数组其实相当于(*a)[]这样一个指针，不是一个指针或者二级指针
 		*/
-		//bp->bpgt_pso(testData[0], target[0]);
-		bp->bpgt_pso(p[0], t);
+		bp->bpgt_pso(testData[0], target[0]);
+		//bp->bpgt_pso(p[0], t);
 			cout<<  endl <<  "MSE:  " << bp->psoEngine->glbest//bp->mse(&data[i%8][3]) 
 				<< "... Training..." << endl;
 	
@@ -114,9 +128,9 @@ using namespace std;
 	cout<< "Now using the trained network to make predctions on test data...." << endl << endl;	
 	for ( i = 0 ; i < inputn ; i++ )
 	{
-		bp->ffwd(p[i]);
-		printf("%lf \t%lf\t%.4lf\n",p[i][0],p[i][1],bp->Out(0));//,bp->Out(1));
-		//cout << testData[i][0]<< "  " << testData[i][1]<< "  "  << testData[i][2]<< "  " << bp->Out(0) << endl;
+		bp->ffwd(testData[i]);
+		//printf("%lf \t%lf\t%.4lf\n",p[i][0],p[i][1],bp->Out(0));//,bp->Out(1));
+		cout << testData[i][0]<< "  " << testData[i][1]<< "  "  << testData[i][2]<< "  " << bp->Out(0) << " "<<bp->Out(1) << endl;
 	}
 
 	return 0;
