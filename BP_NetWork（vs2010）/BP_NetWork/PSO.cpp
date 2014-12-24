@@ -4,31 +4,31 @@
 PSO::PSO(int _Dim,int _Number,CBackProp &_bp):Dim(_Dim),number(_Number),bp(_bp)
 {
 	
-	 c1=2;//аёвсвтиМ╣дхой╤
-	 c2=2;//аёвсуШ╦Жх╨лЕ╣дхой╤
+	 c1=2;//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫й╤
+	 c2=2;//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫х╨О©╫О©╫О©╫О©╫О©╫й╤
 
-	 w =0 ;//╧ъптх╗жь
-	 wmax=0.9;//вН╢С╧ъптх╗жь
-	 wmin=0.4;//вНп║╧ъптх╗жь
+	 w =0 ;//О©╫О©╫О©╫О©╫х╗О©╫О©╫
+	 wmax=0.9;//О©╫О©╫О©╫О©╫О©╫О©╫х╗О©╫О©╫
+	 wmin=0.4;//О©╫О©╫п║О©╫О©╫О©╫О©╫х╗О©╫О©╫
 
-	 T=0;//╣╠г╟╣Э╢З╢нйЩ
-	 Tmax=0;//вН╢С╣Э╢З╢нйЩ
+	 T=0;//О©╫О©╫г╟О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
+	 Tmax=0;//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
 
-	 pmax=0;//аёвсн╩жцио╫Г
-	 pmin=0;//аёвсн╩жцоб╫Г
+	 pmax=0;//О©╫О©╫О©╫О©╫н╩О©╫О©╫О©╫о╫О©╫
+	 pmin=0;//О©╫О©╫О©╫О©╫н╩О©╫О©╫О©╫б╫О©╫
 
-	 vmax=0;//кы╤хвН╢Сж╣
+	 vmax=0;//О©╫ы╤О©╫О©╫О©╫О©╫ж╣
 
 
-	 glbindex = -1;//аёвсвН╨цййс╕╤х╠Ю╨е
+	 glbindex = -1;//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫с╕О©╫х╠О©╫О©╫
 	 gBest = new double[Dim];
-	 gbest[0] = new double[Dim];//х╚╬жвНсе╫Б
-	 gbest[1] = new double[Dim];//х╚╬жвНсе╫Б
-	 gbest[2] = new double[Dim];//х╚╬жвНсе╫Б
-	 glbest = 200000;//вН╨цййс╕╤х
+	 gbest[0] = new double[Dim];//х╚О©╫О©╫О©╫О©╫О©╫е╫О©╫
+	 gbest[1] = new double[Dim];//х╚О©╫О©╫О©╫О©╫О©╫е╫О©╫
+	 gbest[2] = new double[Dim];//х╚О©╫О©╫О©╫О©╫О©╫е╫О©╫
+	 glbest = 200000;//О©╫О©╫О©╫О©╫О©╫с╕О©╫О©╫
 
-	 m = 0;//╫Исз1ё╛0ж╝╪Д╣дкФ╩ЗйЩ
-	 n = 0;//╫Исз1ё╛0ж╝╪Д╣дкФ╩ЗйЩ
+	 m = 0;//О©╫О©╫О©╫О©╫1О©╫О©╫0ж╝О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
+	 n = 0;//О©╫О©╫О©╫О©╫1О©╫О©╫0ж╝О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
 
 	 /*
 	 *particles
@@ -58,7 +58,7 @@ PSO::~PSO()
 	free(particles);
 }
 
-void PSO::fitness(){//гСййс╕╤х
+void PSO::fitness(){//О©╫О©╫О©╫О©╫с╕О©╫О©╫
 	int i,j;
 	double sum=0;
 	for(i=0;i<number;i++){
@@ -75,13 +75,13 @@ void PSO::fitness(){//гСййс╕╤х
 
 }
 
-void PSO::limit_PSO(){//йДхКаёвс╣дкы╤х╨мн╩жцпео╒
+void PSO::limit_PSO(){//О©╫О©╫О©╫О©╫О©╫О©╫О©╫с╣О©╫О©╫ы╤х╨О©╫н╩О©╫О©╫О©╫О©╫о╒
 	float a= 5,b=-5;
 	pmax=a;pmin=b;vmax= 2.0;//pmax-pmin;
 	return;
 }
 
-void PSO::initial_PSO(double *_in,double *_tgt){//ЁУй╪╩╞аёвс
+void PSO::initial_PSO(double *_in,double *_tgt){//О©╫О©╫й╪О©╫О©╫О©╫О©╫О©╫О©╫
 	int i,j;
 	Tmax =  bp.iterator;
 	tgt = _tgt;
@@ -91,8 +91,8 @@ void PSO::initial_PSO(double *_in,double *_tgt){//ЁУй╪╩╞аёвс
 	{
 		for(j=0;j<Dim;j++)
 		{
-			particles[i].v[j]=vmax*1.0*rand()/RAND_MAX;//аёвс╣д╦Вн╛кы╤х
-			particles[i].position[j]= 1.0*rand()/RAND_MAX*(2)+(-1);//аёвс╣дн╩жц
+			particles[i].v[j]=vmax*1.0*rand()/RAND_MAX;//О©╫О©╫О©╫с╣д╦О©╫н╛О©╫ы╤О©╫
+			particles[i].position[j]= 1.0*rand()/RAND_MAX*(2)+(-1);//О©╫О©╫О©╫с╣О©╫н╩О©╫О©╫
 			particles[i].pbest[j]=particles[i].position[j];
 			/*printf("%d 's initial speed is%lf\n",i,particles[i].v[j]);
 			printf("%d 's initial postition is%lf\n",i,particles[i].position[j]);
@@ -106,16 +106,16 @@ void PSO::initialBest(bool initial){
 	fitness();
 	if(initial)
 		{
-			glbindex=0;//ЁУй╪╩╞й╠╣даёвсвН╨цййс╕╤х╠Ю╨е
+			glbindex=0;//О©╫О©╫й╪О©╫О©╫й╠О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫с╕О©╫х╠О©╫О©╫
 			glbindex1 = number/3;
 			glbindex2 = 2*number/3;
 	}
 
-	for(i=0;i<number;i++)//я╟урвН╨ц╣дййс╕╤х╣даёвс
+	for(i=0;i<number;i++)//я╟О©╫О©╫О©╫О©╫ц╣О©╫О©╫О©╫с╕О©╫х╣О©╫О©╫О©╫О©╫О©╫
 	{
 		particles[i].bestfitness=particles[i].fitness;	
 		for(j=0;j<Dim;j++)
-				particles[i].pbest[j]=particles[i].position[j];//ЁУй╪╩╞й╠╣д╦ЖлЕвН╨цн╩жц
+				particles[i].pbest[j]=particles[i].position[j];//О©╫О©╫й╪О©╫О©╫й╠О©╫д╦О©╫О©╫О©╫О©╫О©╫О©╫н╩О©╫О©╫
 	}
 
 	if(!initial)
@@ -137,11 +137,11 @@ void PSO::initialBest(bool initial){
 	}
 		for(j=0;j<Dim;j++)
 		{
-			gbest[0][j]=particles[glbindex].position[j];//ЁУй╪╩╞й╠х╚╬жвН╨цн╩жц
+			gbest[0][j]=particles[glbindex].position[j];//О©╫О©╫й╪О©╫О©╫й╠х╚О©╫О©╫О©╫О©╫О©╫н╩О©╫О©╫
 		}
 	glbest0=particles[glbindex].bestfitness;
 	/*
-	** жжх╨2 
+	** О©╫О©╫х╨2 
 		*/
 	double s1=particles[glbindex1].bestfitness;
 	for(int i=number/3;i<2*number/3;i++)
@@ -154,12 +154,12 @@ void PSO::initialBest(bool initial){
 	}
 		for(j=0;j<Dim;j++)
 		{
-			gbest[1][j]=particles[glbindex1].position[j];//ЁУй╪╩╞й╠х╚╬жвН╨цн╩жц
+			gbest[1][j]=particles[glbindex1].position[j];//О©╫О©╫й╪О©╫О©╫й╠х╚О©╫О©╫О©╫О©╫О©╫н╩О©╫О©╫
 		}
 	glbest1=particles[glbindex1].bestfitness;
-	//printf("%d,/ЁУй╪╩╞%.9f\n",glbindex,glbest);//ЁУй╪╩╞аёвсййс╕╤х
+	//printf("%d,/О©╫О©╫й╪О©╫О©╫%.9f\n",glbindex,glbest);//О©╫О©╫й╪О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫с╕О©╫О©╫
 	/*
-	*жжх╨3
+	*О©╫О©╫х╨3
 	*/
 	double s2=particles[glbindex2].bestfitness;
 	for(int i=2*number/3;i<number;i++)
@@ -172,13 +172,13 @@ void PSO::initialBest(bool initial){
 	}
 		for(j=0;j<Dim;j++)
 		{
-			gbest[2][j]=particles[glbindex2].position[j];//ЁУй╪╩╞й╠х╚╬жвН╨цн╩жц
+			gbest[2][j]=particles[glbindex2].position[j];//О©╫О©╫й╪О©╫О©╫й╠х╚О©╫О©╫О©╫О©╫О©╫н╩О©╫О©╫
 		}
 	glbest2=particles[glbindex2].bestfitness;
-	//printf("%d,/ЁУй╪╩╞%.9f\n",glbindex,glbest);//ЁУй╪╩╞аёвсййс╕╤х
+	//printf("%d,/О©╫О©╫й╪О©╫О©╫%.9f\n",glbindex,glbest);//О©╫О©╫й╪О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫с╕О©╫О©╫
 
 	/*
-	*х╥╤╗х╚╬жвН╨ц
+	*х╥О©╫О©╫х╚О©╫О©╫О©╫О©╫О©╫
 	*/
 	glbest  = glbest0;
 	GLBINDEX =glbindex;
@@ -198,11 +198,11 @@ void PSO::initialBest(bool initial){
 	   
 }
 
-void PSO::update_Interweight(){//╦Эпбаёвс╣д╧ъптх╗жь,оъпт╣щ╪У║ё
+void PSO::update_Interweight(){//О©╫О©╫О©╫О©╫О©╫О©╫О©╫с╣д╧О©╫О©╫О©╫х╗О©╫О©╫,О©╫О©╫О©╫т╣щ╪О©╫О©╫О©╫
 	w=wmax-T*(wmax-wmin)/Tmax;
 }
 
-void PSO::update_speed(){//╦Эпбаёвс╣д╣дкы╤х
+void PSO::update_speed(){//О©╫О©╫О©╫О©╫О©╫О©╫О©╫с╣д╣О©╫О©╫ы╤О©╫
 	int i,j;
 	srand((unsigned)(time(NULL)));
 	m=(double((double)(rand()%(int)(16384)/(16383.0))));
@@ -223,7 +223,7 @@ void PSO::update_speed(){//╦Эпбаёвс╣д╣дкы╤х
 		}
 	}
 		/*
-		жжх╨2
+		О©╫О©╫х╨2
 		*/
 	for(i=number/3;i<2*number/3;i++)
 	{
@@ -258,7 +258,7 @@ void PSO::update_speed(){//╦Эпбаёвс╣д╣дкы╤х
 	}
 	return;
 }
-void PSO::update_position(){//╦Эпбаёвс╣дн╩жц
+void PSO::update_position(){//О©╫О©╫О©╫О©╫О©╫О©╫О©╫с╣О©╫н╩О©╫О©╫
     int i,j;
 	for(i=0;i<number;i++){                                          
 		for(j=0;j<Dim;j++)
@@ -275,7 +275,7 @@ void PSO::update_position(){//╦Эпбаёвс╣дн╩жц
 	fitness();
 	for(i=0;i<number;i++)
 	{
-		if(particles[i].fitness<particles[i].bestfitness)//╦Эпбаёвс╣дюЗй╥╦ЖлЕвН╨цн╩жц
+		if(particles[i].fitness<particles[i].bestfitness)//О©╫О©╫О©╫О©╫О©╫О©╫О©╫с╣О©╫О©╫О©╫й╥О©╫О©╫О©╫О©╫О©╫О©╫О©╫н╩О©╫О©╫
 		{
 			particles[i].bestfitness=particles[i].fitness;
 			for(j=0;j<Dim;j++)
@@ -286,7 +286,7 @@ void PSO::update_position(){//╦Эпбаёвс╣дн╩жц
 	}
 	return;
 }
-void PSO::update_gbest(){//╦Эпбх╚лЕаёвс╣дх╚╬жвНсен╩жц
+void PSO::update_gbest(){//О©╫О©╫О©╫О©╫х╚О©╫О©╫О©╫О©╫О©╫с╣О©╫х╚О©╫О©╫О©╫О©╫О©╫О©╫н╩О©╫О©╫
 	int i;
 
 	for(i=0;i<number/3;i++)
@@ -336,7 +336,7 @@ void PSO::update_gbest(){//╦Эпбх╚лЕаёвс╣дх╚╬жвНсен╩жц
 		}
 	
 	/*
-	*х╥╤╗х╚╬жвН╨ц
+	*х╥О©╫О©╫х╚О©╫О©╫О©╫О©╫О©╫
 	*/
 	if(glbest >glbest0)
 	{

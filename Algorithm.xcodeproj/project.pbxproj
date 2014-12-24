@@ -13,10 +13,11 @@
 		E5AFA48819D98B1300EB155E /* Algorithm.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = E5AFA48719D98B1300EB155E /* Algorithm.1 */; };
 		E5D5479519DA41090012B83D /* TopKNum.c in Sources */ = {isa = PBXBuildFile; fileRef = E5D5479419DA41090012B83D /* TopKNum.c */; };
 		E5F0587F1A3A8CAC00C15048 /* LCS.c in Sources */ = {isa = PBXBuildFile; fileRef = E5F0587E1A3A8CAC00C15048 /* LCS.c */; };
-		E5F0589C1A41095600C15048 /* BackPro.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5F058951A41095600C15048 /* BackPro.cpp */; };
-		E5F0589D1A41095600C15048 /* BP_NetWork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5F058971A41095600C15048 /* BP_NetWork.cpp */; };
-		E5F0589E1A41095600C15048 /* Particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5F058981A41095600C15048 /* Particle.cpp */; };
-		E5F0589F1A41095600C15048 /* PSO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5F0589A1A41095600C15048 /* PSO.cpp */; };
+		E5F058A61A450ED500C15048 /* BackPro.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5F058A51A450ED500C15048 /* BackPro.cpp */; };
+		E5F058A81A450EDB00C15048 /* BP_NetWork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5F058A71A450EDB00C15048 /* BP_NetWork.cpp */; };
+		E5F058AA1A450EE100C15048 /* MAIN.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5F058A91A450EE100C15048 /* MAIN.cpp */; };
+		E5F058AC1A450EE700C15048 /* PSO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5F058AB1A450EE700C15048 /* PSO.cpp */; };
+		E5F058B01A450F9900C15048 /* Particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5F058AF1A450F9900C15048 /* Particle.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,7 +36,6 @@
 /* Begin PBXFileReference section */
 		E511FB1919D998DD005DBB4D /* leftMove.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = leftMove.h; sourceTree = "<group>"; };
 		E511FB1D19D99901005DBB4D /* leftMove.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = leftMove.c; sourceTree = "<group>"; };
-		E57F8E7C1A2977CA00568989 /* PSO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PSO.h; sourceTree = "<group>"; };
 		E586183E19E4DFAA00B27124 /* TrieTree.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrieTree.h; sourceTree = "<group>"; };
 		E586184019E4DFB500B27124 /* TrieTree.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TrieTree.c; sourceTree = "<group>"; };
 		E5AFA48119D98B1300EB155E /* Algorithm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Algorithm; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -45,13 +45,15 @@
 		E5D5479419DA41090012B83D /* TopKNum.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TopKNum.c; sourceTree = "<group>"; };
 		E5F0587C1A3A8C9F00C15048 /* LCS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LCS.h; sourceTree = "<group>"; };
 		E5F0587E1A3A8CAC00C15048 /* LCS.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LCS.c; sourceTree = "<group>"; };
-		E5F058951A41095600C15048 /* BackPro.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BackPro.cpp; sourceTree = "<group>"; };
-		E5F058961A41095600C15048 /* BackPro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackPro.h; sourceTree = "<group>"; };
-		E5F058971A41095600C15048 /* BP_NetWork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BP_NetWork.cpp; sourceTree = "<group>"; };
-		E5F058981A41095600C15048 /* Particle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Particle.cpp; sourceTree = "<group>"; };
-		E5F058991A41095600C15048 /* Particle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Particle.h; sourceTree = "<group>"; };
-		E5F0589A1A41095600C15048 /* PSO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PSO.cpp; sourceTree = "<group>"; };
-		E5F0589B1A41095600C15048 /* PSO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSO.h; sourceTree = "<group>"; };
+		E5F058A01A450EB400C15048 /* PSO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PSO.h; path = "BP_NetWork（vs2010）/BP_NetWork/PSO.h"; sourceTree = SOURCE_ROOT; };
+		E5F058A11A450EB400C15048 /* Particle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Particle.h; path = "BP_NetWork（vs2010）/BP_NetWork/Particle.h"; sourceTree = SOURCE_ROOT; };
+		E5F058A21A450EBC00C15048 /* BP_NetWork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BP_NetWork.h; path = "BP_NetWork（vs2010）/BP_NetWork/BP_NetWork.h"; sourceTree = SOURCE_ROOT; };
+		E5F058A41A450ECD00C15048 /* BackPro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BackPro.h; path = "BP_NetWork（vs2010）/BP_NetWork/BackPro.h"; sourceTree = SOURCE_ROOT; };
+		E5F058A51A450ED500C15048 /* BackPro.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BackPro.cpp; path = "BP_NetWork（vs2010）/BP_NetWork/BackPro.cpp"; sourceTree = SOURCE_ROOT; };
+		E5F058A71A450EDB00C15048 /* BP_NetWork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BP_NetWork.cpp; path = "BP_NetWork（vs2010）/BP_NetWork/BP_NetWork.cpp"; sourceTree = SOURCE_ROOT; };
+		E5F058A91A450EE100C15048 /* MAIN.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MAIN.cpp; path = "BP_NetWork（vs2010）/BP_NetWork/MAIN.cpp"; sourceTree = SOURCE_ROOT; };
+		E5F058AB1A450EE700C15048 /* PSO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PSO.cpp; path = "BP_NetWork（vs2010）/BP_NetWork/PSO.cpp"; sourceTree = SOURCE_ROOT; };
+		E5F058AF1A450F9900C15048 /* Particle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Particle.cpp; path = "BP_NetWork（vs2010）/BP_NetWork/Particle.cpp"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,13 +70,10 @@
 		E511FB1B19D998E3005DBB4D /* header */ = {
 			isa = PBXGroup;
 			children = (
-				E5F058991A41095600C15048 /* Particle.h */,
-				E5F0589B1A41095600C15048 /* PSO.h */,
-				E5F058961A41095600C15048 /* BackPro.h */,
+				E5F058AE1A450F0100C15048 /* BP_PSO */,
 				E511FB1919D998DD005DBB4D /* leftMove.h */,
 				E5D5479219DA40F80012B83D /* TopKNum.h */,
 				E586183E19E4DFAA00B27124 /* TrieTree.h */,
-				E57F8E7C1A2977CA00568989 /* PSO.h */,
 				E5F0587C1A3A8C9F00C15048 /* LCS.h */,
 			);
 			name = header;
@@ -83,6 +82,7 @@
 		E511FB1C19D998EE005DBB4D /* source */ = {
 			isa = PBXGroup;
 			children = (
+				E5F058AD1A450EEB00C15048 /* BP_PSO */,
 				E511FB1D19D99901005DBB4D /* leftMove.c */,
 				E5D5479419DA41090012B83D /* TopKNum.c */,
 				E586184019E4DFB500B27124 /* TrieTree.c */,
@@ -110,16 +110,35 @@
 		E5AFA48419D98B1300EB155E /* Algorithm */ = {
 			isa = PBXGroup;
 			children = (
-				E5F058971A41095600C15048 /* BP_NetWork.cpp */,
-				E5F058951A41095600C15048 /* BackPro.cpp */,
-				E5F058981A41095600C15048 /* Particle.cpp */,
-				E5F0589A1A41095600C15048 /* PSO.cpp */,
 				E511FB1C19D998EE005DBB4D /* source */,
 				E511FB1B19D998E3005DBB4D /* header */,
 				E5AFA48519D98B1300EB155E /* main.c */,
 				E5AFA48719D98B1300EB155E /* Algorithm.1 */,
 			);
 			path = Algorithm;
+			sourceTree = "<group>";
+		};
+		E5F058AD1A450EEB00C15048 /* BP_PSO */ = {
+			isa = PBXGroup;
+			children = (
+				E5F058A51A450ED500C15048 /* BackPro.cpp */,
+				E5F058AB1A450EE700C15048 /* PSO.cpp */,
+				E5F058A71A450EDB00C15048 /* BP_NetWork.cpp */,
+				E5F058AF1A450F9900C15048 /* Particle.cpp */,
+				E5F058A91A450EE100C15048 /* MAIN.cpp */,
+			);
+			name = BP_PSO;
+			sourceTree = "<group>";
+		};
+		E5F058AE1A450F0100C15048 /* BP_PSO */ = {
+			isa = PBXGroup;
+			children = (
+				E5F058A41A450ECD00C15048 /* BackPro.h */,
+				E5F058A21A450EBC00C15048 /* BP_NetWork.h */,
+				E5F058A01A450EB400C15048 /* PSO.h */,
+				E5F058A11A450EB400C15048 /* Particle.h */,
+			);
+			name = BP_PSO;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -177,10 +196,11 @@
 				E5D5479519DA41090012B83D /* TopKNum.c in Sources */,
 				E586184119E4DFB500B27124 /* TrieTree.c in Sources */,
 				E5F0587F1A3A8CAC00C15048 /* LCS.c in Sources */,
-				E5F0589C1A41095600C15048 /* BackPro.cpp in Sources */,
-				E5F0589D1A41095600C15048 /* BP_NetWork.cpp in Sources */,
-				E5F0589E1A41095600C15048 /* Particle.cpp in Sources */,
-				E5F0589F1A41095600C15048 /* PSO.cpp in Sources */,
+				E5F058A61A450ED500C15048 /* BackPro.cpp in Sources */,
+				E5F058A81A450EDB00C15048 /* BP_NetWork.cpp in Sources */,
+				E5F058AA1A450EE100C15048 /* MAIN.cpp in Sources */,
+				E5F058AC1A450EE700C15048 /* PSO.cpp in Sources */,
+				E5F058B01A450F9900C15048 /* Particle.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
