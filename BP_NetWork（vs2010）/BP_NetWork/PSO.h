@@ -56,8 +56,15 @@ public:
 	int T;//当前迭代次数
 	int Tmax;//最大迭代次数
 	int glbindex;//粒子最好适应度编号
-	double *gbest;//全局最优解
+	int glbindex1;//粒子最好适应度编号
+	int glbindex2;//粒子最好适应度编号
+	int GLBINDEX;
+	double *gBest;//全局最优解
+	double *gbest[3];//全局最优解
 	double glbest;//最好适应度
+	double glbest0;//最好适应度
+	double glbest1;
+	double glbest2;
 private:
 	double m;//介于1，0之间的随机数
 	double n;//介于1，0之间的随机数

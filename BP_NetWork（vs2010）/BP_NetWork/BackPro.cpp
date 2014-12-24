@@ -299,7 +299,7 @@ void CBackProp::bpgt_pso(double *in,double *tgt )
 			{
 				for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
 				{
-					weight[i][j][k]= psoEngine->gbest[dim++];
+					weight[i][j][k]= psoEngine->gBest[dim++];
 				}
 		}
 
