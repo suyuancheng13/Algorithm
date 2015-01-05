@@ -14,6 +14,7 @@
 #include<stdio.h>
 #include<math.h>
 #include"PSO.h"
+#include"RCGA.h"
 
 class CBackProp{
 
@@ -40,7 +41,7 @@ public:
 private:
 //	learning rate
 	double beta;
-
+	int Dim;
 //	momentum parameter
 	double alpha;
 
@@ -60,6 +61,7 @@ private:
 	double Thresh;
 public:
 	PSO	*psoEngine;
+	RCGA *gaEngine;
 	int iterator;
 
 public:
@@ -74,6 +76,10 @@ public:
 	*using pso to adjust the weight
 	*/
 	void bpgt_pso(double *in,double *tgt);
+	/*
+	*using ga to adjut the weight
+	*/
+	void bpgt_ga(double *in,double *tgt);
 
 //	feed forwards activations for one set of inputs
 	void ffwd(double *in);
@@ -86,6 +92,8 @@ public:
 
 	//copy the weight from particle
 	void  getWeightFromPSO(int index);
+	//copy the weight from chromosome of GA
+	void  getWeightFromGA(int index);
 };
 
 #endif

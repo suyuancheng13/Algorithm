@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 	// Learing rate - beta
 	// momentum - alpha
 	// Threshhold - thresh (value of target mse, training stops once it is achieved)
-	double beta = 0.3, alpha = 0.1, Thresh =  0.000001;
+	double beta = 0.3, alpha = 0.1, Thresh =  0.00001;
 
 	
 	// maximum no of iterations during training
