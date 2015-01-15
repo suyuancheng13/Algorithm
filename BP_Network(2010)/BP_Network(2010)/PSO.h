@@ -60,7 +60,7 @@ public:
 	int glbindex2;//粒子最好适应度编号
 	int GLBINDEX;
 	double *gBest;//全局最优解
-	double *gbest[3];//全局最优解
+	double *gbest;//全局最优解
 	double glbest;//最好适应度
 	double glbest0;//最好适应度
 	double glbest1;

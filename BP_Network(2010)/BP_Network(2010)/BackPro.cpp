@@ -7,7 +7,7 @@
 CBackProp::CBackProp(int nl,int *sz,int _iterator,double _thresh,int inputn,double b,double a):beta(b),alpha(a),isInitial(true),iterator(_iterator),	Thresh(_thresh),inputN(inputn)
 {
 	
-	//	set no of layers and their sizes
+	//	set no. of layers and their sizes
 	numl=nl;
 	lsize=new int[numl];
 	int i=0;
@@ -22,13 +22,6 @@ CBackProp::CBackProp(int nl,int *sz,int _iterator,double _thresh,int inputn,doub
 
 	for( i=0;i<numl;i++){
 		out[i]=new double[lsize[i]];
-	}
-
-	//	allocate memory for delta
-	delta = new double*[numl];
-
-	for(i=1;i<numl;i++){
-		delta[i]=new double[lsize[i]];
 	}
 
 	//	allocate memory for weights
@@ -48,19 +41,6 @@ CBackProp::CBackProp(int nl,int *sz,int _iterator,double _thresh,int inputn,doub
 		}
 	}
 
-	//	allocate memory for previous weights
-	prevDwt = new double**[numl];
-
-	for(i=1;i<numl;i++){
-		prevDwt[i]=new double*[lsize[i]];
-
-	}
-	for(i=1;i<numl;i++){
-		for(int j=0;j<lsize[i];j++){
-			prevDwt[i][j]=new double[lsize[i-1]+1];
-		}
-	}
-
 	//	seed and assign random weights
 	srand((unsigned)(time(NULL)));
 	for(i=1;i<numl;i++)
@@ -72,36 +52,124 @@ CBackProp::CBackProp(int nl,int *sz,int _iterator,double _thresh,int inputn,doub
 						Dim++;
 			}
 
-	//	initialize previous weights to 0 for first iteration
-	for(i=1;i<numl;i++)
-		for(int j=0;j<lsize[i];j++)
-			for(int k=0;k<lsize[i-1]+1;k++)
-				prevDwt[i][j][k]=(double)0.0;
-
-// Note that the following variables are unused,
-//
-// delta[0]
-// weight[0]
-// prevDwt[0]
-
-//  I did this intentionaly to maintains consistancy in numbering the layers.
-//  Since for a net having n layers, input layer is refered to as 0th layer,
-//  first hidden layer as 1st layer and the nth layer as output layer. And 
-//  first (0th) layer just stores the inputs hence there is no delta or weigth
-//  values corresponding to it.
-
+				/*
+				initial the delta weight
+				*/
+		prevDwt = new double**[numl];
+		for(i=1;i<numl;i++){
+			prevDwt[i]=new double*[lsize[i]];
+		}
+		for(i=1;i<numl;i++){
+			for(int j=0;j<lsize[i];j++){
+				prevDwt[i][j]=new double[lsize[i-1]+1];
+			}
+		}
+		for(i=1;i<numl;i++)
+			for(int j=0;j<lsize[i];j++)
+				for(int k=0;k<lsize[i-1]+1;k++)
+					prevDwt[i][j][k]=(double)0.0;
+	
+		/*initial the delta for gradient ascent
+		*/
+		delta = new double*[numl];
+		for(i=1;i<numl;i++){
+			delta[i]=new double[lsize[i]];
+	}
+		for(int i=1;i<numl;i++)
+			for(int j=0;j<lsize[i];j++)
+				delta[i][j] = 0.0;
 	/*
 	* initial the engine of pso
 	*/
 
-	//psoEngine = new PSO(dim,60,*this);
+	psoEngine = new PSO(dim,60,*this);
 	gaEngine = new RCGA(*this);
-
-	
 	
 
 }
+void CBackProp::initial_wb_nw()
+{
+	srand((unsigned)(time(NULL)));
 
+	double wMag = 0.7*pow(lsize[1],1.0/lsize[0]);
+	double **w = new double *[lsize[1]];
+	double *W = new double[lsize[1]];
+	double *bias = new double[lsize[1]];
+	for(int i=0;i<lsize[1];i++)
+	{
+		w[i] = new double[lsize[0]];
+	}
+	/*
+	rand with uniformation
+	*/
+	for(int i=0;i<lsize[1];i++)
+		{
+			for(int j=0;j<lsize[0];j++)
+		{
+			w[i][j] = 2.0*rand()/RAND_MAX-1;
+		}
+	}
+	/*
+	uniformat the rand weights
+	*/
+	double ss = 0;
+	for(int i=0;i<lsize[1];i++)
+	{
+		ss = 0;
+		for(int j=0;j<lsize[0];j++)
+		{ 
+			ss += pow(w[i][j],2);
+		}
+		W[i] = sqrt(1/ss);
+	}
+
+	for(int i=0;i<lsize[1];i++)
+	{
+		for(int j=0;j<lsize[0];j++)
+		{ 
+			w[i][j] *= wMag*W[1];
+		}
+	}
+	/*
+	compute the bias
+	*/
+	double interval = 2.0/lsize[1];
+	double incrument = -1;
+	for(int i=0;i<lsize[1];i++)
+	{
+		bias[i] =  wMag*incrument;
+		incrument += interval;
+	}
+	for(int i=0;i<lsize[1];i++)
+	{
+		if(w[i][0]>0)
+	      bias[i] *=1;
+		else if(w[i][0]== 0)
+			bias[i] =0;
+		else
+			bias[i] *=-1;
+	}
+	for(int i=1;i<numl;i++)//layers NO.
+		for(int j=0;j<lsize[i];j++)//the neurons in layers
+			for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
+				{
+					if( i == 1)
+					{
+						if(k == lsize[i-1])
+							weight[i][j][k] = bias[j];
+						else 
+							weight[i][j][k] = w[j][k];
+					}
+					else
+						weight[i][j][k]= 1.0*rand()/RAND_MAX;//(double)(rand())/(RAND_MAX/2) - 1;//32767
+				//	printf("\t%lf",weight[i][j][k]);
+			}
+	delete [] bias;
+	delete [] W;
+  for(int i=0;i<lsize[1];i++)
+		delete[] w[i];
+  delete[] w;
+}
 
 
 CBackProp::~CBackProp()
@@ -115,23 +183,21 @@ CBackProp::~CBackProp()
 	for(i=1;i<numl;i++)
 		delete[] delta[i];
 	delete[] delta;
-
 	//	free weight
 	for(i=1;i<numl;i++)
-		for(int j=0;j<lsize[i];j++)
+		for(int j=0;j<lsize[i]+1;j++)
 			delete[] weight[i][j];
 	for(i=1;i<numl;i++)
 		delete[] weight[i];
 	delete[] weight;
 
-	//	free prevDwt
+		//	free prevDwt
 	for(i=1;i<numl;i++)
 		for(int j=0;j<lsize[i];j++)
 			delete[] prevDwt[i][j];
 	for(i=1;i<numl;i++)
 		delete[] prevDwt[i];
 	delete[] prevDwt;
-
 	//	free layer info
 	delete[] lsize;
 	//delete psoEngine;
@@ -147,14 +213,14 @@ double CBackProp::purelin(double in)
 {
 	return in;
 }
-//	mean square error
+//	mean square errorsqrt
 double CBackProp::mse(double *tgt) const
 {
 	double mse=0;
 	for(int i=0;i<lsize[numl-1];i++){
-		mse+=(tgt[i]-out[numl-1][i])*(tgt[i]-out[numl-1][i]);
+		mse+=((tgt[i]-out[numl-1][i])*(tgt[i]-out[numl-1][i]));
 	}
-	return mse/2;
+	return mse/(inputN*lsize[numl-1]);
 }
 
 
@@ -195,54 +261,50 @@ void CBackProp::ffwd(double *in)
 		}
 	}
 }
-
-
-//	backpropogate errors from output
-//	layer uptill the first hidden layer
-void CBackProp::bpgt(double *in,double *tgt)
+void CBackProp::maxMin(double *matrix, int rows,int coloums,double *max,double *min)
 {
-	double sum;
-	int i=0;
-	//	update output values for each neuron
-	ffwd(in);
-
-	//	find delta for output layer
-	for(int i=0;i<lsize[numl-1];i++){
-		delta[numl-1][i]=out[numl-1][i]*
-		(1-out[numl-1][i])*(tgt[i]-out[numl-1][i]);
-	}
-
-	//	find delta for hidden layers	
-	for(i=numl-2;i>0;i--){
-		for(int j=0;j<lsize[i];j++){
-			sum=0.0;
-			for(int k=0;k<lsize[i+1];k++){
-				sum+=delta[i+1][k]*weight[i+1][k][j];
+	int index = coloums;
+	for(int i =0;i<rows;i++)
+		//for(int j=0;j<coloums;j++)
+		{
+		
+			if(*(matrix+index)>*max)
+			{
+				*max = *(matrix+index);
 			}
-			delta[i][j]=out[i][j]*(1-out[i][j])*sum;
-		}
-	}
-
-	//	apply momentum ( does nothing if alpha=0 )
-	for(i=1;i<numl;i++){
-		for(int j=0;j<lsize[i];j++){
-			for(int k=0;k<lsize[i-1];k++){
-				weight[i][j][k]+=alpha*prevDwt[i][j][k];
+			if(*(matrix+index)<*min)
+			{
+				*min = *(matrix+index);
 			}
-			weight[i][j][lsize[i-1]]+=alpha*prevDwt[i][j][lsize[i-1]];
+			index+= lsize[0];
+		
 		}
-	}
 
-	//	adjust weights usng steepest descent	
-	for(i=1;i<numl;i++){
-		for(int j=0;j<lsize[i];j++){
-			for(int k=0;k<lsize[i-1];k++){
-				prevDwt[i][j][k]=beta*delta[i][j]*out[i-1][k];
-				weight[i][j][k]+=prevDwt[i][j][k];
-			}
-			prevDwt[i][j][lsize[i-1]]=beta*delta[i][j];
-			weight[i][j][lsize[i-1]]+=prevDwt[i][j][lsize[i-1]];
+}
+/*
+normlize then normalized matrix by columns
+x' = x*sqrt(1/sum(pow(xi,2))) (i = 0,1,,,columns)
+
+*/
+void CBackProp::uniformation(double *matrix,int rows,int coloums)
+{
+	int index =0;
+	double max= -LONG_MAX;
+	double min = LONG_MAX;
+	
+	for(int i =0;i<coloums;i++)
+	{
+		max= -LONG_MAX;
+		min = LONG_MAX;
+	   maxMin(matrix,rows,i,&max,&min);
+	   index =i;
+		for(int j=0;j<rows;j++)
+		{
+			*(matrix+index) = 2*(*(matrix+index)-min)/(max-min)-1;
+				index+=lsize[0];
 		}
+
+		
 	}
 }
 
@@ -254,7 +316,8 @@ void CBackProp::getWeightFromPSO(int index)
 	int dim = 0;
 	for(int i=1;i<numl;i++)
 		for(int j=0;j<lsize[i];j++)
-			{for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
+			{
+				for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
 				{
 					weight[i][j][k]= psoEngine->particles[index].position[dim++];
 			}
@@ -273,6 +336,84 @@ void CBackProp::getWeightFromGA(int index)
 					weight[i][j][k]= gaEngine->population[index].chromosome[dim++];
 			}
 		}
+}
+void CBackProp::bpgt_gd(double *in,double *tgt)
+{
+
+	double sum=0.0;
+	double _mse = 0.0;
+	//int i=0;
+	double beta = 0.3;//learning rate
+	//FILE *fp = fopen("ga_gd_result.txt","a");
+	/*
+	intitial weights and bias
+	*/
+	//initial_wb_nw();
+	for(int t =0 ;t<iterator-160;t++)
+	{
+			/*
+			* batch training
+			*/
+		_mse =0;
+		for(int i=1;i<numl;i++)
+			for(int j=0;j<lsize[i];j++)
+				delta[i][j] = 0.0;
+		for(int i=1;i<numl;i++)
+			for(int j=0;j<lsize[i];j++)
+				for(int k=0;k<lsize[i-1]+1;k++)
+					prevDwt[i][j][k]=(double)0.0;
+
+			for(int l=0;l<inputN;l++)
+			{
+				//	update output values for each neuron
+				ffwd(in+l*lsize[0]);	
+
+				_mse += mse(tgt+l*lsize[numl-1]);
+				//	find delta for output layer
+				for(int i=0;i<lsize[numl-1];i++){
+					delta[numl-1][i]  =  ((tgt+l*lsize[numl-1])[i]-out[numl-1][i]);
+				}
+
+				//	find delta for hidden layers	
+				for(int i=numl-2;i>0;i--){
+					for(int j=0;j<lsize[i];j++){
+						sum=0.0;
+						for(int k=0;k<lsize[i+1];k++){
+							sum+=delta[i+1][k]*weight[i+1][k][j];
+						}
+						delta[i][j] =(1-pow(out[i][j],2))*sum;
+					}
+				}	
+				for(int i=1;i<numl;i++){
+					for(int j=0;j<lsize[i];j++){
+						for(int k=0;k<lsize[i-1];k++){
+							prevDwt[i][j][k] += beta*delta[i][j]*out[i-1][k];
+							//weight[i][j][k]+=prevDwt[i][j][k];
+						}
+						prevDwt[i][j][lsize[i-1]] +=beta*delta[i][j];//µ÷Õûbias
+						//weight[i][j][lsize[i-1]]+=prevDwt[i][j][lsize[i-1]];
+					}
+				}
+			}
+		//	fprintf(fp,"%lf\n",_mse);
+			printf("\t%d \t%lf\n",t,_mse);
+			if(_mse<Thresh)
+			{
+				break;
+			}
+			/*
+			adjust weights usng steepest descent
+			*/
+			for(int i=1;i<numl;i++){
+					for(int j=0;j<lsize[i];j++){
+						for(int k=0;k<lsize[i-1];k++){
+							weight[i][j][k]+=prevDwt[i][j][k]/inputN;
+							//	printf(" \t%lf\n",prevDwt[i][j][k]/inputN);
+						}
+						weight[i][j][lsize[i-1]]+=prevDwt[i][j][lsize[i-1]]/inputN;
+					}
+			}
+	}
 }
 /*
 *using pso to adjust the weight
@@ -296,7 +437,7 @@ void CBackProp::bpgt_pso(double *in,double *tgt )
 	//*/
 	//psoEngine->initialBest(isInitial);
 	
-	for(;psoEngine->T++<psoEngine->Tmax;)
+	for(;psoEngine->T++<psoEngine->Tmax-160;)
 	{
 
 		printf("Epoch:%d\n",psoEngine->T);
@@ -319,14 +460,14 @@ void CBackProp::bpgt_pso(double *in,double *tgt )
 			{
 				for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
 				{
-					weight[i][j][k]= psoEngine->gBest[dim++];
+					weight[i][j][k]= psoEngine->gbest[dim++];
 				}
 		}
 
 }
 void CBackProp::bpgt_ga(double *in, double *tgt)
 {
-		gaEngine->initialRCGA(50,Dim,iterator,0.8,0.1, 5.0,-5.0,0.0);
+		gaEngine->initialRCGA(60,Dim,160,0.8,0.05, 5.0,-5.0,0.0);
 		gaEngine->gaOptions(in,tgt);
 		gaEngine->evolution();
 

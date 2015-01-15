@@ -4,8 +4,8 @@
 PSO::PSO(int _Dim,int _Number,CBackProp &_bp):Dim(_Dim),number(_Number),bp(_bp)
 {
 	
-	 c1=2;
-	 c2=2;
+	 c1=2.0;
+	 c2=2.0;
 
 	 w =0 ;
 	 wmax=0.9;
@@ -21,10 +21,8 @@ PSO::PSO(int _Dim,int _Number,CBackProp &_bp):Dim(_Dim),number(_Number),bp(_bp)
 
 
 	 glbindex = -1;
-	 gBest = new double[Dim];
-	 gbest[0] = new double[Dim];
-	 gbest[1] = new double[Dim];
-	 gbest[2] = new double[Dim];
+	gbest = new double[Dim];
+	
 	 glbest = 200000;
 
 	 m = 0;
@@ -42,13 +40,12 @@ PSO::PSO(int _Dim,int _Number,CBackProp &_bp):Dim(_Dim),number(_Number),bp(_bp)
 		 	 /*
 			 write the result out
 			 */
-	// out = fopen("result.txt","a");
+	   //  out = fopen("ga_pso_result.txt","a");
 }
 PSO::~PSO()
 {
-	delete[] gbest[0];
-	delete[] gbest[1];
-	delete[] gbest[2];
+	delete[] gbest;
+	
 	for(int i =0 ;i<number;i++)
 	{
 		delete[] particles[i].v;
@@ -67,7 +64,7 @@ void PSO::fitness(){
 		for(int j=0;j<bp.inputN;j++){
 			//printf("%lf %lf\n",(tgt+j*bp.lsize[bp.numl-1])[0],(tgt+j*bp.lsize[bp.numl-1])[1]);
 			bp.ffwd((in+j*bp.lsize[0]));
-			sum += bp.mse((tgt+j*bp.lsize[bp.numl-1]));
+			sum += bp.mse(tgt+j*bp.lsize[bp.numl-1]);
 		}
 		particles[i].fitness =sum;
 
@@ -77,7 +74,7 @@ void PSO::fitness(){
 
 void PSO::limit_PSO(){
 	float a= 5,b=-5;
-	pmax=a;pmin=b;vmax= 2.0;//pmax-pmin;
+	pmax=a;pmin=b;vmax= 1.50;//pmax-pmin;
 	return;
 }
 
@@ -89,10 +86,21 @@ void PSO::initial_PSO(double *_in,double *_tgt){
 	srand((unsigned)(time(NULL)));
 	for(i=0;i<number;i++)
 	{
+		bp.initial_wb_nw();
 		for(j=0;j<Dim;j++)
 		{
 			particles[i].v[j]=vmax*1.0*rand()/RAND_MAX;
-			particles[i].position[j]= 1.0*rand()/RAND_MAX*(2)+(-1);
+
+			for(int ii=1;ii<bp.numl;ii++)
+				for(int jj=0;jj<bp.lsize[ii];jj++)
+				{
+					for(int k=0;k<bp.lsize[ii-1]+1;k++)//bias is the last one
+					{
+						particles[i].position[j] = bp.weight[ii][jj][k];
+					}
+				}
+			
+			//particles[i].position[j]= 1.0*rand()/RAND_MAX*(pmax-pmin)+(pmin);
 			particles[i].pbest[j]=particles[i].position[j];
 			/*printf("%d 's initial speed is%lf\n",i,particles[i].v[j]);
 			printf("%d 's initial postition is%lf\n",i,particles[i].position[j]);
@@ -105,10 +113,9 @@ void PSO::initialBest(bool initial){
 	int i =0,j=0;
 	fitness();
 	if(initial)
-		{
+	{
 			glbindex=0;
-			glbindex1 = number/3;
-			glbindex2 = 2*number/3;
+
 	}
 
 	for(i=0;i<number;i++)
@@ -120,14 +127,12 @@ void PSO::initialBest(bool initial){
 
 	if(!initial)
 	{
-			glbest = glbest0=particles[glbindex].bestfitness;
-			glbest1=particles[glbindex1].bestfitness;
-			glbest2=particles[glbindex2].bestfitness;
+			glbest = particles[glbindex].bestfitness;
 			return;
 	}
 
 	double s=particles[glbindex].bestfitness;
-	for(int i=0;i<number/3;i++)
+	for(int i=0;i<number;i++)
 	{
 		if(particles[i].bestfitness<s)
 		{
@@ -137,55 +142,9 @@ void PSO::initialBest(bool initial){
 	}
 		for(j=0;j<Dim;j++)
 		{
-			gbest[0][j]=particles[glbindex].position[j];
+			gbest[j]=particles[glbindex].position[j];
 		}
-	glbest0=particles[glbindex].bestfitness;
-
-	double s1=particles[glbindex1].bestfitness;
-	for(int i=number/3;i<2*number/3;i++)
-	{
-		if(particles[i].bestfitness<s)
-		{
-			s1=particles[i].bestfitness;
-			glbindex1=i;	
-		}
-	}
-		for(j=0;j<Dim;j++)
-		{
-			gbest[1][j]=particles[glbindex1].position[j];
-		}
-	glbest1=particles[glbindex1].bestfitness;
-	
-	double s2=particles[glbindex2].bestfitness;
-	for(int i=2*number/3;i<number;i++)
-	{
-		if(particles[i].bestfitness<s)
-		{
-			s2=particles[i].bestfitness;
-			glbindex2=i;	
-		}
-	}
-		for(j=0;j<Dim;j++)
-		{
-			gbest[2][j]=particles[glbindex2].position[j];
-		}
-	glbest2=particles[glbindex2].bestfitness;
-
-	glbest  = glbest0;
-	GLBINDEX =glbindex;
-	if(glbest > glbest1)
-	{	glbest = glbest1;
-	GLBINDEX =glbindex1;
-	}
-	if(glbest > glbest2)
-	{
-		glbest = glbest2;
-		GLBINDEX =glbindex2;
-	}
-	for(int i=0;i<Dim;i++)
-	{
-		gBest[i]= particles[GLBINDEX].position[j];
-	}
+	glbest=particles[glbindex].bestfitness;
 	   
 }
 
@@ -196,50 +155,15 @@ void PSO::update_Interweight(){
 void PSO::update_speed(){
 	int i,j;
 	srand((unsigned)(time(NULL)));
-	m=(double((double)(rand()%(int)(16384)/(16383.0))));
-	n=(double((double)(rand()%(int)(16384)/(16383.0))));
+
 	
-	for(i=0;i<number/3;i++)
+	for(i=0;i<number;i++)
 	{
 		for(j=0;j<Dim;j++)
 		{ 
 			//particles[i].v[j]=w*particles[i].v[j]+c1*m*(particles[i].pbest[j]-particles[i].position[j])+c2*n*(gbest[j]-particles[i].position[j]);
 		 particles[i].v[j]=w*particles[i].v[j]+c1*1.0*rand()/RAND_MAX*(particles[i].pbest[j]-particles[i].position[j])
-				+c2*1.0*rand()/RAND_MAX*(gbest[0][j]-particles[i].position[j]);
-			if(particles[i].v[j]>vmax)
-				particles[i].v[j]=vmax;
-			if(particles[i].v[j]<-vmax)
-				particles[i].v[j]=-vmax;
-			//printf("%d,speed %.10lf\n",i,particles[i].v[j]);
-		}
-	}
-		/*
-		��Ⱥ2
-		*/
-	for(i=number/3;i<2*number/3;i++)
-	{
-		for(j=0;j<Dim;j++)
-		{ 
-			//particles[i].v[j]=w*particles[i].v[j]+c1*m*(particles[i].pbest[j]-particles[i].position[j])+c2*n*(gbest[j]-particles[i].position[j]);
-		 particles[i].v[j]=w*particles[i].v[j]+c1*1.0*rand()/RAND_MAX*(particles[i].pbest[j]-particles[i].position[j])
-				+c2*1.0*rand()/RAND_MAX*(gbest[1][j]-particles[i].position[j]);
-			if(particles[i].v[j]>vmax)
-				particles[i].v[j]=vmax;
-			if(particles[i].v[j]<-vmax)
-				particles[i].v[j]=-vmax;
-			//printf("%d,speed %.10lf\n",i,particles[i].v[j]);
-		}
-	}
-		/*
-		swarm 3
-		*/
-		for(i=2*number/3;i<number;i++)
-	{
-		for(j=0;j<Dim;j++)
-		{ 
-			//particles[i].v[j]=w*particles[i].v[j]+c1*m*(particles[i].pbest[j]-particles[i].position[j])+c2*n*(gbest[j]-particles[i].position[j]);
-		 particles[i].v[j]=w*particles[i].v[j]+c1*1.0*rand()/RAND_MAX*(particles[i].pbest[j]-particles[i].position[j])
-				+c2*1.0*rand()/RAND_MAX*(gbest[2][j]-particles[i].position[j]);
+				+c2*1.0*rand()/RAND_MAX*(gbest[j]-particles[i].position[j]);
 			if(particles[i].v[j]>vmax)
 				particles[i].v[j]=vmax;
 			if(particles[i].v[j]<-vmax)
@@ -249,7 +173,7 @@ void PSO::update_speed(){
 	}
 	return;
 }
-void PSO::update_position(){//�������ӵ�λ��
+void PSO::update_position(){
     int i,j;
 	for(i=0;i<number;i++){                                          
 		for(j=0;j<Dim;j++)
@@ -266,7 +190,7 @@ void PSO::update_position(){//�������ӵ�λ��
 	fitness();
 	for(i=0;i<number;i++)
 	{
-		if(particles[i].fitness<particles[i].bestfitness)//�������ӵ���ʷ�������λ��?
+		if(particles[i].fitness<particles[i].bestfitness)
 		{
 			particles[i].bestfitness=particles[i].fitness;
 			for(j=0;j<Dim;j++)
@@ -277,80 +201,23 @@ void PSO::update_position(){//�������ӵ�λ��
 	}
 	return;
 }
-void PSO::update_gbest(){//����ȫ�����ӵ�ȫ������λ��
+void PSO::update_gbest(){
 	int i;
 
-	for(i=0;i<number/3;i++)
+	for(i=0;i<number;i++)
 	{
-		if(particles[i].bestfitness<glbest0)
+		if(particles[i].bestfitness<glbest)
 		{
 				glbindex=i;
-				glbest0=particles[glbindex].bestfitness;
+				glbest=particles[glbindex].bestfitness;
 				for(int j=0;j<Dim;j++)
 				{
-					gbest[0][j]=particles[glbindex].pbest[j];
+					gbest[j]=particles[glbindex].pbest[j];
 				}
-			
-		}
+			}
 	}
-		/*
-		swarm2
-		*/
-		for(i=number/3;i<2*number/3;i++)
-	{
-		if(particles[i].bestfitness<glbest1)
-		{
-				glbindex1=i;
-				glbest1=particles[glbindex1].bestfitness;
-				for(int j=0;j<Dim;j++)
-				{
-					gbest[1][j]=particles[glbindex1].pbest[j];
-				}
-			
-		}
-		}
-		/*
-		swarm 3
-		*/
-		for(i=2*number/2;i<number;i++)
-	{
-		if(particles[i].bestfitness<glbest2)
-		{
-				glbindex2=i;
-				glbest2=particles[glbindex2].bestfitness;
-				for(int j=0;j<Dim;j++)
-				{
-					gbest[2][j]=particles[glbindex2].pbest[j];
-				}
-			
-		}
-		}
-	
-	/*
-	*ȷ��ȫ�����?
-	*/
-	if(glbest >glbest0)
-	{
-		glbest  = glbest0;
-		GLBINDEX = glbindex;
-	}
-	if(glbest > glbest1)
-	{
-		glbest = glbest1;
-		GLBINDEX = glbindex1;
-	}
-	if(glbest > glbest2)
-	{
-		glbest = glbest2;
-		GLBINDEX = glbindex2;
-	}
-	//fprintf(out,"%lf ",glbest);
-  printf("\n%d,%.9f\n",GLBINDEX,glbest);
-	for(int i=0;i<Dim;i++)
-	{
-		gBest[i]= particles[GLBINDEX].pbest[i];
-	}
-     
+  printf("\n%d,%.9f\n",glbindex,glbest);
+   //fprintf(out,"%.10lf\n",glbest);
 	return;
 }
 void PSO::Print()
@@ -359,7 +226,6 @@ void PSO::Print()
 	//for(i=0;i<number;i++){                                          
 		for(j=0;j<Dim;j++)
 		{	
-		
 			printf("\t%.10lf",gbest[j]);
 		}
 	
