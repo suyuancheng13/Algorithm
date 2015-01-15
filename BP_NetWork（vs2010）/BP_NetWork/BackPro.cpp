@@ -12,6 +12,7 @@ CBackProp::CBackProp(int nl,int *sz,int _iterator,double _thresh,int inputn,doub
 	lsize=new int[numl];
 	int i=0;
 	int dim =0 ;
+	Dim =0;
 	for(int i=0;i<numl;i++){
 		lsize[i]=sz[i];
 	}
@@ -68,6 +69,7 @@ CBackProp::CBackProp(int nl,int *sz,int _iterator,double _thresh,int inputn,doub
 				{
 					weight[i][j][k]= 0;//(double)(rand())/(RAND_MAX/2) - 1;//32767
 						dim++;
+						Dim++;
 			}
 
 	//	initialize previous weights to 0 for first iteration
@@ -92,7 +94,10 @@ CBackProp::CBackProp(int nl,int *sz,int _iterator,double _thresh,int inputn,doub
 	* initial the engine of pso
 	*/
 
-	psoEngine = new PSO(dim,60,*this);
+	//psoEngine = new PSO(dim,60,*this);
+	gaEngine = new RCGA(*this);
+
+	
 	
 
 }
@@ -129,7 +134,8 @@ CBackProp::~CBackProp()
 
 	//	free layer info
 	delete[] lsize;
-	delete psoEngine;
+	//delete psoEngine;
+	delete gaEngine;
 }
 
 //	sigmoid function
@@ -255,6 +261,20 @@ void CBackProp::getWeightFromPSO(int index)
 		}
 }
 /*
+* get the weight from GA
+*/
+void CBackProp::getWeightFromGA(int index)
+{
+	int dim = 0;
+	for(int i=1;i<numl;i++)
+		for(int j=0;j<lsize[i];j++)
+			{for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
+				{
+					weight[i][j][k]= gaEngine->population[index].chromosome[dim++];
+			}
+		}
+}
+/*
 *using pso to adjust the weight
 */
 void CBackProp::bpgt_pso(double *in,double *tgt )
@@ -302,5 +322,22 @@ void CBackProp::bpgt_pso(double *in,double *tgt )
 					weight[i][j][k]= psoEngine->gBest[dim++];
 				}
 		}
+
+}
+void CBackProp::bpgt_ga(double *in, double *tgt)
+{
+		gaEngine->initialRCGA(50,Dim,iterator,0.8,0.1, 5.0,-5.0,0.0);
+		gaEngine->gaOptions(in,tgt);
+		gaEngine->evolution();
+
+		int dim = 0;
+		for(int i=1;i<numl;i++)
+			for(int j=0;j<lsize[i];j++)
+				{
+					for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
+					{
+					weight[i][j][k]= gaEngine->bestindividual.chromosome[dim++];
+					}
+			}
 
 }

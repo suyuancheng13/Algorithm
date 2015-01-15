@@ -9,6 +9,8 @@ Thumbs.db
 *.aps
 *.pch
 *.vspscc
+*_i.c
+*_p.c
 *.ncb
 *.suo
 *.tlb
@@ -25,3 +27,8 @@ obj/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
+*.vcxproj
+*.sdf
+*.sln
+*.filters
+*.opensdf
