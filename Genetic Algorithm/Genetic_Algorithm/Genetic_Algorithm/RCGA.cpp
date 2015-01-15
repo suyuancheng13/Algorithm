@@ -1,7 +1,20 @@
 #include"RCGA.h"
-#include"BackPro.h"
 #include<time.h>
 #include<cmath>
+void Individual::initial(double _topLimit,double _downLimit)
+{
+	topLimit = _topLimit;
+	bottomLimit = _downLimit;
+	/*
+	*initial the chromosome
+	*/
+	for(int i=0;i<geneNum;i++)
+	{
+		double gen = 1.0*rand()/(RAND_MAX-1)*(topLimit-bottomLimit)+bottomLimit;
+		chromosome.push_back(gen);
+	}
+}
+
 /*
 *RCGA  class
 */
@@ -18,16 +31,7 @@ void RCGA::initialRCGA(int _popSize,int _geneNum,int _maxGeneration,double _cros
 	srand((unsigned)time(NULL));
 	for(int i =0;i<popSize;i++)
 	{
-		bp.initial_wb_nw();
 		Individual _individual(geneNum);
-		//for(int ii=1;ii<bp.numl;ii++)
-		//	for(int jj=0;jj<bp.lsize[ii];jj++)
-		//	{
-		//		for(int k=0;k<bp.lsize[ii-1]+1;k++)//bias is the last one
-		//		{
-		//			_individual.chromosome.push_back( bp.weight[ii][jj][k]);
-		//		}
-		//	}
 		_individual.initial(topLimit,bottomLimit);
 		population.push_back(_individual);
 	}
@@ -35,28 +39,27 @@ void RCGA::initialRCGA(int _popSize,int _geneNum,int _maxGeneration,double _cros
 }
 void RCGA::evolution()
 {
-	//FILE *fp = fopen("ga_gd_result.txt","w");
-	//FILE *fp = fopen("ga_pso_result.txt","w");
 	int GEN =0;
-	t = 0;
+	t=0;
 	while(GEN<maxGeneration){
 
 		fitness();	
 		updateBestIndividual();	
-		if( fabs(bestindividual.fitness-goal)<0.0001)
+		if( fabs(bestindividual.fitness-goal)<0.000001)
+			{
+				printf("\ngoal got!!\n");
 				break;
+		}
 		
 		selectOperator();
 		crossoverOperator();
 		mutationOperator();
 		GEN++;
 		t++;
-		printf("\t%5d \t%.10lf\n", GEN,abs(1/bestindividual.fitness-1));
-		//fprintf(fp,"%lf\n",abs(1/bestindividual.fitness-1));
+		printf("\t%5d  %.10lf\n", GEN,abs(bestindividual.fitness));
 	}
 
 }
-
 void RCGA::result(double *_result)
 {
 	for(int i=0;i<geneNum;i++)
@@ -65,11 +68,7 @@ void RCGA::result(double *_result)
 	}
 }
 
-void RCGA::gaOptions(double *_in,double *tgt)
-{
-	input = _in;
-	target = tgt;
-}
+
 /*
 *private operators function
 */
@@ -144,12 +143,13 @@ void RCGA::mutationOperator()
 	{
 		current=population[i];
 		//生成均值为current.chromosome，方差为sigma的高斯分布数
-
-		for(j=0; j<geneNum; j++)
-		{   
 		p = 1.0*rand()/(RAND_MAX-1);
 		if(p<mutationRate)
-	
+		for(j=0; j<geneNum; j++)
+		{   
+
+			//p = 1.0*rand()/(RAND_MAX-1);
+			//if(p<mutationRate)
 			{
 				double sign;
 				sign=rand()%2;
@@ -187,6 +187,9 @@ void RCGA::mutationOperator()
 		population[i] = current;
 	}
 }
+/*
+采用全部交叉
+*/
 void RCGA::crossoverOperator()
 {
 	int i,j;
@@ -203,21 +206,22 @@ void RCGA::crossoverOperator()
 		if (p<crossoverRate)
 		{   
 		
-			alpha = 0.6;//1.0*rand()/(RAND_MAX-1);//交叉点
-			beta = 1.0*rand()/(RAND_MAX-1);
-			int d = rand()%geneNum;
+			alpha =  0.6;//1.0*rand()/(RAND_MAX-1);//交叉点
+			beta =  1.0*rand()/(RAND_MAX-1);
+			
 			tmp = current=population[i];
 			current1=population[i+1];
 			for(j=0;j<geneNum;j++)			
 			{ 
 				//交叉	
+				
 	    			current.chromosome[j]=(alpha)*current.chromosome[j]+
 						(1-alpha)*current1.chromosome[j];	
 					 current1.chromosome[j]=(alpha)*current1.chromosome[j]+
 						(1-alpha)*tmp.chromosome[j];	
-						/*	 current1.chromosome[j]=tmp.chromosome[j]+
+			/*		 current1.chromosome[j]=tmp.chromosome[j]+
 						(alpha)*(tmp.chromosome[j]-current1.chromosome[j]);*/
-				
+						
 				if (current.chromosome[j]>topLimit)  //判断是否超界.
 				{
 					current.chromosome[j]=1.0*rand()/(RAND_MAX-1)*(topLimit-bottomLimit)+bottomLimit;
@@ -239,35 +243,41 @@ void RCGA::crossoverOperator()
 			population[i+1] = current1;
 			//i++;
 		}
+		
+
 	}
+
+
 }
 void RCGA::updateBestIndividual()
 {
 	for(int i=0;i<popSize;i++)
 	{
-		if(bestindividual.fitness < population[i].fitness)
+		if(bestindividual.fitness < population[i].fitness)//找最大的值
 			bestindividual = population[i];
 	}
 	
 }
 /*
-*
+test function is y = x*x;
 */
 void RCGA::fitness()
 {
-	int i,j;
-	double sum=0;
-	for(i=0;i<popSize;i++){
-		sum = 0;
-		bp.getWeightFromGA(i);
-		for(int j=0;j<bp.inputN;j++){
-			//printf("%lf %lf\n",(tgt+j*bp.lsize[bp.numl-1])[0],(tgt+j*bp.lsize[bp.numl-1])[1]);
-			bp.ffwd((input+j*bp.lsize[0]));
-			sum += bp.mse((target+j*bp.lsize[bp.numl-1]));
-		}
-	//	printf("%lf\n",sum);
-		//sum /= (bp.inputN*bp.lsize[bp.numl-1]);
-		population[i].fitness = 1/(sum+1);
-
+	for(int i=0;i<popSize;i++)
+	{
+		double sum =0;
+		current = population[i];
+		for(int j=0;j<geneNum;j++)
+		{
+			/*if(i==0)
+			printf("\t%lf",current.chromosome[j]);*/
+		//	sum+= (current.chromosome[j]*current.chromosome[j]);
+			sum += current.chromosome[j];//*sin(current.chromosome[j])+1.0;
+			//sum+=100*pow((pow(current.chromosome[0],2)-pow(current.chromosome[1],2)),2)+pow(1-current.chromosome[0],2);
+		}	
+		
+		current.fitness = sum;
+		population[i] = current;
+		//printf("%lf\n",abs(1/population[i].fitness-1));
 	}
 }

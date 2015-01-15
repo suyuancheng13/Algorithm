@@ -1,24 +1,35 @@
 #pragma once
 #include<vector>
-#include"chromosome.h"
 using namespace std;
+class Individual
+{
+public:
+	Individual(){}
+	Individual(int _geneNum):geneNum(_geneNum),fitness(
+		0),weight(0)
+	{	}
+	void initial(double _topLimit,double _downLimit);
 
+public:/*Variables*/
+	vector<double>chromosome;
+	double fitness;
+	double weight;
+private:
+	int geneNum;
+	double topLimit;
+	double bottomLimit;
+};
 
-/*
-*现在只做了优化最大值，可以将函数进行转换后求最小值
-*/
-class CBackProp;
 class RCGA
 {
 public:
-	RCGA(CBackProp &_bp):popSize(0),best_index(-1),worst_index(-1),crossoverRate(0),mutationRate(0),bp(_bp){};
+	RCGA():popSize(0),best_index(-1),worst_index(-1),crossoverRate(0),mutationRate(0){};
 	~RCGA(){};
 	
 public:   /*Functions*/
 	void initialRCGA(int _popSize,int _genNum,int _maxGeneration,double _crossoverRate,double _mutationRate, double _topLimit,double _downLimit,double _goal);
 	void evolution();
 	void result(double *);
-	void gaOptions(double *,double*);
 
 private:/*Functions*/
    void selectOperator();
@@ -28,6 +39,7 @@ private:/*Functions*/
 	void updateBestIndividual();
 
 private:/*Variables*/
+	
 
 	int popSize;
 	int geneNum;
@@ -36,24 +48,18 @@ private:/*Variables*/
 	double crossoverRate;            //交叉率
 	double mutationRate;            //变异率
 	int maxGeneration;             //最大世代数
-	int gen;
-	int t;//当前代数
 	double topLimit;
 	double bottomLimit;
 	double goal;
-	double *input;
-	double *target;
-public:
+	int t;
+
     vector<Individual> population;
-private:
 	vector<Individual>nextPoputation;
-public:
+
 	Individual bestindividual;         //最佳个体
-private:
+	Individual worstindividual;         //最差个体
 	Individual current;              //当前个体
 	Individual tmp;              //当前个体
 	Individual current1;              //当前个体
-
-	CBackProp &bp;
-	
+	Individual currentbest;          //当前最佳个体
 };

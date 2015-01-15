@@ -1,13 +1,13 @@
 #pragma once
 #include<vector>
 using namespace std;
+
+
 class Individual
 {
 public:
 	Individual(){}
-	Individual(int _geneNum):geneNum(_geneNum),fitness(
-		0),weight(0)
-	{	}
+	Individual(int _geneNum);
 	void initial(double _topLimit,double _downLimit);
 
 public:/*Variables*/
@@ -18,4 +18,5 @@ private:
 	int geneNum;
 	double topLimit;
 	double bottomLimit;
+	
 };
