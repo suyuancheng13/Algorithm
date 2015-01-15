@@ -25,8 +25,8 @@ public:
 public:
 	void fitness();
 	void limit_PSO();//动态区间的设置
-	void initial_PSO(double *_tgt);
-	void initialBest();
+	void initial_PSO(double *in,double *_tgt);
+	void initialBest(bool _initial);
 	void update_gbest();
 	void update_speed();
 	void update_position();
@@ -42,7 +42,7 @@ private:
 	double w;//惯性权重
 	double wmax;//最大惯性权重
 	double wmin;//最小惯性权重
-
+public:
 	int T;//当前迭代次数
 	int Tmax;//最大迭代次数
 
@@ -51,7 +51,7 @@ private:
 
 	double vmax;//速度最大值
 
-public:
+
 	int glbindex;//粒子最好适应度编号
 	double *gbest;//全局最优解
 	double glbest;//最好适应度
@@ -62,8 +62,10 @@ private:
 	//bp 
 	CBackProp &bp;
 	//taret from bp network
-	double *tgt;
+
 public:
 	/*vector<Particle> particles;*/
 	Particle *particles;
+    double *tgt;
+    double *in;
 };

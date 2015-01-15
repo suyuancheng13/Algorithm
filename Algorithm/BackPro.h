@@ -18,6 +18,7 @@
 class CBackProp{
 
 //	output of each neuron
+public:
 	double **out;
 
 //	delta error value for each neuron
@@ -30,15 +31,19 @@ class CBackProp{
 //	including input layer
 	int numl;
 
+	// input vector numbers
+	int inputN;
 //	vector of numl elements for size 
 //	of each layer
 	int *lsize;
 
+private:
 //	learning rate
 	double beta;
 
 //	momentum parameter
 	double alpha;
+
 
 //	storage for weight-change made
 //	in previous epoch
@@ -46,17 +51,22 @@ class CBackProp{
 
 //	squashing function
 	double sigmoid(double in);
-
+	double purelin(double in);
 // pso engine
+	
+	double *target;
+	bool  isInitial;
+	
+	double Thresh;
+public:
 	PSO	*psoEngine;
-    bool isInitial;
+	int iterator;
 
 public:
-
 	~CBackProp();
 
 //	initializes and allocates memory
-	CBackProp(int nl,int *sz,double b,double a);
+	CBackProp(int nl,int *sz,int iterator,double Thresh,int inputn,double b,double a);
 
 //	backpropogates error for one set of input
 	void bpgt(double *in,double *tgt);
@@ -75,7 +85,7 @@ public:
 	double Out(int i) const;
 
 	//copy the weight from particle
-	void  getWeightFromPSO();
+	void  getWeightFromPSO(int index);
 };
 
 #endif

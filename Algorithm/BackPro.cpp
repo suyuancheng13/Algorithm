@@ -4,7 +4,7 @@
 
 
 //	initializes and allocates memory on heap
-CBackProp::CBackProp(int nl,int *sz,double b,double a):beta(b),alpha(a)
+CBackProp::CBackProp(int nl,int *sz,int _iterator,double _thresh,int inputn,double b,double a):beta(b),alpha(a),isInitial(true),iterator(_iterator),	Thresh(_thresh),inputN(inputn)
 {
 	
 	//	set no of layers and their sizes
@@ -66,8 +66,7 @@ CBackProp::CBackProp(int nl,int *sz,double b,double a):beta(b),alpha(a)
 		for(int j=0;j<lsize[i];j++)
 			for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
 				{
-					weight[i][j][k]= (double)(rand())/(RAND_MAX/2) - 1;//32767
-					//if(k < lsize[i-1])
+					weight[i][j][k]= 0;//(double)(rand())/(RAND_MAX/2) - 1;//32767
 						dim++;
 			}
 
@@ -92,7 +91,10 @@ CBackProp::CBackProp(int nl,int *sz,double b,double a):beta(b),alpha(a)
 	/*
 	* initial the engine of pso
 	*/
+
 	psoEngine = new PSO(dim,60,*this);
+	
+
 }
 
 
@@ -133,9 +135,12 @@ CBackProp::~CBackProp()
 //	sigmoid function
 double CBackProp::sigmoid(double in)
 {
-		return (double)(1/(1+exp(-in)));
+		return (double)(2/(1+exp(-2*in))-1);//tansig sigmoid function
 }
-
+double CBackProp::purelin(double in)
+{
+	return in;
+}
 //	mean square error
 double CBackProp::mse(double *tgt) const
 {
@@ -158,10 +163,13 @@ void CBackProp::ffwd(double *in)
 {
 	double sum;
 	int i=0;
-
+	
 	//	assign content to input layer
 	for(int i=0;i<lsize[0];i++)
+	{	
 		out[0][i]=in[i];  // output_from_neuron(i,j) Jth neuron in Ith Layer
+	
+	}
 
 	//	assign output(activation) value 
 	//	to each neuron usng sigmoid func
@@ -171,8 +179,13 @@ void CBackProp::ffwd(double *in)
 			for(int k=0;k<lsize[i-1];k++){		// For input from each neuron in preceeding layer
 				sum+= out[i-1][k]*weight[i][j][k];	// Apply weight to inputs and add to sum
 			}
+		
 			sum+=weight[i][j][lsize[i-1]];		// Apply bias
-			out[i][j]=sigmoid(sum);				// Apply sigmoid function
+			if(i<numl-1)
+				out[i][j]=sigmoid(sum);				// Apply sigmoid function
+			else
+				out[i][j]=purelin(sum);				//The output sigmoid function is purelin 
+																	//to ensure output every function result
 		}
 	}
 }
@@ -230,19 +243,16 @@ void CBackProp::bpgt(double *in,double *tgt)
 /*
 * get the weight from particles
 */
-void CBackProp::getWeightFromPSO()
+void CBackProp::getWeightFromPSO(int index)
 {
 	int dim = 0;
 	for(int i=1;i<numl;i++)
 		for(int j=0;j<lsize[i];j++)
 			{for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
 				{
-					weight[i][j][k]= psoEngine->gbest[dim++];//(double)(rand())/(RAND_MAX/2) - 1;//32767
-				//	printf("%lf,",weight[i][j][k]);
+					weight[i][j][k]= psoEngine->particles[index].position[dim++];
 			}
-			//printf("\n");
 		}
-		//printf("///////////////");
 }
 /*
 *using pso to adjust the weight
@@ -251,19 +261,46 @@ void CBackProp::bpgt_pso(double *in,double *tgt )
 {
 	//	update output values for each neuron
 	
-	psoEngine->limit_PSO();
-	psoEngine->initial_PSO(tgt);
-	getWeightFromPSO();
-	psoEngine->initialBest();
-	for(int i =0 ;i<10;i++)
+	if(isInitial)
 	{
-		getWeightFromPSO();
-		ffwd(in);
+		psoEngine->limit_PSO();
+		psoEngine->initial_PSO(in,tgt);
+		psoEngine->initialBest(isInitial);
+		isInitial = false;
+	}
+
+	//psoEngine->in = in;
+	//psoEngine->tgt = tgt;
+	///*
+	//对于每一组输入都要更新最优值，否则可能因为对前一组输入值更优导致无法更新
+	//*/
+	//psoEngine->initialBest(isInitial);
+	
+	for(;psoEngine->T++<psoEngine->Tmax;)
+	{
+
+		printf("Epoch:%d\n",psoEngine->T);
+		if(psoEngine->glbest<Thresh)
+		{
+				printf("\nachived in pso\n");
+				break;
+		}
 		psoEngine->update_Interweight();
 		psoEngine->update_speed();
 		psoEngine->update_position();
 		psoEngine->update_gbest();
+		
+		
 	}
-	getWeightFromPSO();
+	psoEngine->T=0;
+	int dim = 0;
+	for(int i=1;i<numl;i++)
+		for(int j=0;j<lsize[i];j++)
+			{
+				for(int k=0;k<lsize[i-1]+1;k++)//bias is the last one
+				{
+					weight[i][j][k]= psoEngine->gbest[dim++];
+				}
+		}
 
 }
